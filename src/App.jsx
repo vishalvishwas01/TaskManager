@@ -15,7 +15,7 @@ function App() {
   const [filterType, setFilterType] = useState("All");
 
   const getText = async () => {
-    const res = await fetch("http://localhost:3002");
+    const res = await fetch("https://taskmanager-6knj.onrender.com/");
     const Texts = await res.json();
     setList(Texts);
   };
@@ -48,7 +48,7 @@ function App() {
       if (form.length >= 3) {
         const updatedTask = { id: editId, text: form };
         setList(list.map((item) => (item.id === form.id ? newEntry : item)));
-        await fetch("http://localhost:3002", {
+        await fetch("https://taskmanager-6knj.onrender.com", {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(updatedTask),
@@ -82,7 +82,7 @@ function App() {
       if (form.length >= 3) {
         const updatedList = { text: form, id: uuidv4(), completed: false };
         setList([...list, updatedList]);
-        await fetch("http://localhost:3002", {
+        await fetch("https://taskmanager-6knj.onrender.com", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(updatedList),
@@ -130,7 +130,7 @@ function App() {
     );
     setList(updatedList);
 
-    await fetch("http://localhost:3002/toggle", {
+    await fetch("https://taskmanager-6knj.onrender.com/toggle", {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ id, completed: !currentStatus }),
@@ -139,7 +139,7 @@ function App() {
 
   const handleDelete = async (id) => {
     setList(list.filter((value) => value.id !== id));
-    await fetch("http://localhost:3002", {
+    await fetch("https://taskmanager-6knj.onrender.com", {
       method: "DELETE",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ id }),
@@ -167,7 +167,7 @@ function App() {
 
   const handleDeleteAll = async () => {
     setList([]);
-    await fetch("http://localhost:3002/Delete", {
+    await fetch("https://taskmanager-6knj.onrender.com/Delete", {
       method: "DELETE",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({}), // Empty body indicates delete all
