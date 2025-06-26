@@ -195,12 +195,12 @@ function App() {
         theme="light"
         
       />
-      <div className="overflow-hidden flex flex-col justify-center items-center m-0 p-0">
+      <div className="overflow-hidden flex flex-col justify-center items-center m-0 p-0 px-3">
         <div className="absolute top-0 z-[-2] h-screen w-screen bg-[#000000] bg-[radial-gradient(#ffffff33_1px,#00091d_1px)] bg-[size:20px_20px]"></div>
 
         <div className=" text-purple-400 font-bold text-4xl mt-20 comic-relief-regular comic-relief-bold">Task Manager</div>
 
-        <div className="mt-10 rounded-4xl h-[700px] w-full flex flex-col items-center   max-w-[800px] p-4 border-2 border-amber-200">
+        <div className="mt-10 rounded-4xl h-[600px] w-full flex flex-col items-center max-w-[800px] p-4 border-2 border-amber-200">
           {/* adding task and searching section start */}
           <div className="w-full max-w-[800px] h-auto rounded-3xl m-5 flex flex-wrap flex-col gap-4  flex-none">
             <input
