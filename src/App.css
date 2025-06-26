@@ -1,0 +1,39 @@
+@import url('https://fonts.googleapis.com/css2?family=Comic+Relief:wght@400;700&display=swap');
+.comic-relief-regular {
+  font-family: "Comic Relief", system-ui;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.comic-relief-bold {
+  font-family: "Comic Relief", system-ui;
+  font-weight: 700;
+  font-style: normal;
+}
+
+
+.custom-scrollbar {
+  scrollbar-width: thin;                /* Firefox */
+  scrollbar-color: #a855f7 transparent; /* Thumb color | transparent track */
+}
+
+/* Chrome, Edge, Safari */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #a855f7; /* Tailwind's purple-500 */
+  border-radius: 8px;
+}
+
+/* Remove scrollbar arrows (for legacy Microsoft Edge/IE) */
+.custom-scrollbar::-webkit-scrollbar-button {
+  display: none;
+  height: 0;
+  width: 0;
+}
