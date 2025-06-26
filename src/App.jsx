@@ -195,7 +195,7 @@ function App() {
         theme="light"
         
       />
-      <div className="overflow-hidden flex flex-col justify-center items-center m-0 p-0 px-3">
+      <div className="overflow-hidden flex flex-col justify-center items-center m-0 p-0 px-3 overflow-y-hidden">
         <div className="absolute top-0 z-[-2] h-screen w-screen bg-[#000000] bg-[radial-gradient(#ffffff33_1px,#00091d_1px)] bg-[size:20px_20px]"></div>
 
         <div className=" text-purple-400 font-bold text-4xl mt-20 comic-relief-regular comic-relief-bold">Task Manager</div>
@@ -267,7 +267,7 @@ function App() {
             </button>
             <button
                onClick={handleDeleteAll}
-              className="bg-red-500 rounded-xl h-10 w-25 cursor-pointer active:bg-red-400 focus:outline-none transition duration-50 comic-relief-regular"
+              className="bg-red-500 rounded-xl h-10 w-25 cursor-pointer active:bg-red-400 focus:outline-none transition duration-50 comic-relief-regular text-sm"
             >
               Delete All
             </button>
