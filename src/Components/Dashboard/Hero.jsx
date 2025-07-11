@@ -39,19 +39,12 @@ function Hero({ searchQuery, currentDate }) {
         }
       };
 
-    const Completedtask = tasks.filter((task) => task.completed);
+    const Completedtask = tasks
+    .filter((task) => task.completed)
+    .filter((task) => currentDate ? task.date === currentDate : true);
+
     const handleStatusChange = (id, newStatus) => {
-        setTasks(prevTasks =>
-            prevTasks.map(task =>
-                task.id === id
-                    ? {
-                        ...task,
-                        status: newStatus,
-                        completed: newStatus === 'Completed' ? true : false
-                    }
-                    : task
-            )
-        );
+        setTasks(prevTasks =>prevTasks.map(task =>task.id === id ? {...task, status: newStatus, completed: newStatus === 'Completed' ? true : false}: task));
     };
 
     const [CreateOpen, setCreateOpen]= useState('hidden')
@@ -99,8 +92,8 @@ function Hero({ searchQuery, currentDate }) {
 
       
   return (
-    <div className='flex flex-wrap gap-10 justify-center items-center w-5xl h-auto  rounded-2xl shadow-2xl px-1 py-4 my-0'>
-        <div className='flex flex-col gap-2 justify-start items-center w-[100%] lg:w-115 h-190 rounded-2xl py-2 shadow-2xl'>
+    <div className=' flex flex-wrap 2xl:flex-nowrap gap-10 justify-center items-center w-8xl h-auto  rounded-2xl shadow-2xl px-1 py-4 2xl:mr-4 my-0'>
+        <div className='flex flex-col gap-2 justify-start items-center w-[100%] lg:w-115 2xl:w-[25dvw] h-190 rounded-2xl py-2 shadow-2xl'>
             {/* top header of left section start */}
             <div className='flex flex-col gap-2 w-[95%] h-20 '>
                 <div className='flex gap-10 justify-between items-center w-[100%] h-10'>
@@ -113,7 +106,7 @@ function Hero({ searchQuery, currentDate }) {
 
             {/* main content of left section start */}
             <div className='flex flex-col justify-start items-center gap-2 w-[100%] h-full py-2 overflow-y-auto overflow-x-hidden'>
-            {tasks.filter(task => !task.completed &&  task.title.toLowerCase().includes(searchQuery.toLowerCase())).map(task => (
+            {tasks.filter(task => !task.completed &&  task.title.toLowerCase().includes(searchQuery.toLowerCase())&&(currentDate ? task.date === currentDate : true)).map(task => (
                 <div key={task.id} className='relative flex gap-1 border-2 [border-color:#A1A3AB]  h-auto w-[92dvw] md:w-[89dvw] lg:w-[95%] rounded-2xl px-2  py-2'>
                     <div className=' w-[10%] flex items-start justify-center'><img src={Red}/></div>
                     <div className='flex flex-col w-[90%] flex-grow min-w-0 gap-2'>
@@ -121,7 +114,7 @@ function Hero({ searchQuery, currentDate }) {
                         <div className='w-[100%] h-auto text-[16px] font-semibold text-gray-500 whitespace-pre-wrap break-words line-clamp-3'>{task.desc}</div>
                         <div className='flex flex-wrap gap-2 w-[100%] h-auto mt-2 justify-start items-center'>
                             <div className='justify-center items-center h-8'>Status: <span className={task.status === 'Completed' ? 'text-green-500' : task.status === 'Started' ? 'text-blue-500' : 'text-red-400'}>{task.status || 'Not Started'}</span></div>
-                            <div className='justify-center items-center h-8 text-gray-400'>Created on:{task.date}</div>
+                            <div className='justify-center items-center h-8 text-gray-400'>Created on: {task.date}</div>
                         </div>
                     </div>
                     <button onClick={() => toggleMenu(task.id)} className='w-[10%] flex justify-center items-start cursor-pointer'><img src={edit}/></button>
@@ -197,6 +190,14 @@ function Hero({ searchQuery, currentDate }) {
         </div>
 
     {/* main content of right section end */}
+    <div  className='flex flex-col gap-2 justify-start items-center w-[100%] lg:w-110 2xl:w-[22dvw]  h-190 rounded-2xl py-2'>
+         <div className='w-[100%] h-full shadow-2xl py-2 pb-2 px-2 rounded-2xl bord'>
+            <div className=' flex justify-start items-center gap-2 w-[98%] h-10 [color:#FF6767] text-xl font-semibold mb-2'><img src={Statusimg}/>Task History</div>
+            <div className='flex flex-col justify-start items-center gap-2 w-[100%] h-[660px] py-2 overflow-y-auto overflow-x-hidden'>
+            {/* previour filtered task here */}
+            </div>
+        </div>
+    </div>
     <Create currentDates={currentDate} toggle={CreateOpen} setToggle={setCreateOpen} addTask={addTask} AddEdit={addedittoggle}  editTask={editTask} setEditTask={setEditTask}  updateTask={updateTask}/>
     </div>
   )

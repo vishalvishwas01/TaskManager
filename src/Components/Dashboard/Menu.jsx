@@ -8,13 +8,13 @@ function Menu() {
     'group flex gap-3 justify-start items-center w-2xs h-14 rounded-2xl px-4 text-2xl cursor-pointer transition-all';
   const iconBaseClass = 'transition-colors duration-300';
   return (
-    <div className='hidden 2xl:flex flex-col justify-start items-center w-80 h-auto [background-color:#FF6767] rounded-r-2xl py-8'>
+    <div className='hidden 2xl:flex flex-col justify-start items-center w-full max-w-[300px] min-w-[180px] h-auto [background-color:#FF6767] rounded-r-2xl py-8 transition-all'>
       <div className=' w-44 h-24 flex flex-col justify-center items-center'><div className='font-semibold text-xl text-white'>Name</div><div  className='font-normal text-white'>Username</div></div>
 
 
       <NavLink
         to="/"
-        className={({ isActive }) =>`${baseClass} mb-8 ${isActive ? 'bg-white text-[#FF6767]' : 'text-white hover:bg-white hover:[color:#FF6767]'}`}>
+        className={({ isActive }) =>`${baseClass} mb-8 ${isActive ? 'bg-white text-[#FF6767]' : 'text-white hover:bg-white hover:[color:#FF6767]'} text-auto w-[90%]`}>
         <svg
           width="48px"
           height="48px"
@@ -37,7 +37,7 @@ function Menu() {
         className={({ isActive }) =>
           `${baseClass} ${
             isActive ? 'bg-white text-[#FF6767]' : 'text-white hover:bg-white hover:[color:#FF6767]'
-          }`
+          } text-auto w-[90%]`
         }
       >
             <svg width="48px" 
