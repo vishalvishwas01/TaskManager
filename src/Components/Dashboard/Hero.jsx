@@ -10,8 +10,21 @@ import Create from '../Create/Create'
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 
-function Hero({ searchQuery }) {
+function Hero({ searchQuery, currentDate }) {
     const [tasks, setTasks] = useState([])
+
+    const formatDate = (isoDate) => {
+        if (!isoDate) return ""; // guard against undefined/null
+      
+        const [year, month, day] = isoDate.split("-");
+        const dateObj = new Date(year, month - 1, day); // month is 0-indexed
+      
+        const options = { day: "numeric", month: "long" };
+        return dateObj.toLocaleDateString("en-US", options);
+      };
+      
+    const formattedDate = formatDate(currentDate);
+   
 
     const addTask = (task) => {setTasks([...tasks, task])};
 
@@ -94,7 +107,7 @@ function Hero({ searchQuery }) {
                     <div className=' w-25 h-10 flex items-center gap-2 [color:#FF6767] text-xl font-semibold'><svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="34px" height="34px" viewBox="0 0 64 64" enable-background="new 0 0 64 64" xml:space="preserve" fill="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <polygon fill="none" stroke="#000000" stroke-width="0.968" stroke-miterlimit="10" points="55,1 55,54 59,62 63,54 63,1 "></polygon> <line fill="none" stroke="#000000" stroke-width="0.968" stroke-miterlimit="10" x1="55" y1="11" x2="63" y2="11"></line> <polyline fill="none" stroke="#000000" stroke-width="0.968" stroke-miterlimit="10" points="14,8 1,8 1,63 45,63 45,8 32,8 "></polyline> <polygon fill="none" stroke="#000000" stroke-width="0.968" stroke-miterlimit="10" points="27,5 27,1 19,1 19,5 15,5 13,13 33,13 31,5 "></polygon> </g></svg>To-Do</div>
                     <button onClick={()=>{AddPop(), handleAddEdit('Add')}}  className=' w-25 h-10 flex justify-center items-center font-semibold text-gray-400 cursor-pointer'><svg width="34px" height="34px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <title></title> <g id="Complete"> <g data-name="add" id="add-2"> <g> <line fill="none" stroke="#FF6767" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" x1="12" x2="12" y1="19" y2="5"></line> <line fill="none" stroke="#FF6767" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" x1="5" x2="19" y1="12" y2="12"></line> </g> </g> </g> </g></svg> Add Task</button>
                 </div>
-                <div className=' h-10 flex justify-start items-center'>20 June</div>
+                <div className=' h-10 flex justify-start items-center'>{formattedDate}</div>
             </div>
             {/* top header of left section end */}
 
@@ -169,11 +182,10 @@ function Hero({ searchQuery }) {
                 <button onClick={() => toggleMenu(task.id)} className='w-[10%] flex justify-center items-start cursor-pointer'><img src={edit}/></button>
                 {activeMenuId === task.id && (
                 <div ref={menuRef} className='absolute top-8 right-9 flex flex-col justify-center items-center w-30 h-auto gap-2 border border-gray-300 rounded-xl bg-white shadow-md z-10'>
-                   <button onClick={() => handleStatusChange(task.id, 'Started')} className='flex justify-start items-center w-full h-6 pl-4 hover:bg-[#FF6767] transition-all rounded-t-xl cursor-pointer'>Started</button>
+                   <button onClick={() => {handleStatusChange(task.id, 'Started'),setActiveMenuId(null);}} className='flex justify-start items-center w-full h-6 pl-4 hover:bg-[#FF6767] transition-all rounded-t-xl cursor-pointer'>Started</button>
                    <button onClick={()=>{handleStatusChange(task.id, 'Not Started'),setActiveMenuId(null);}} className='flex justify-start items-center w-full h-6 pl-4 hover:bg-[#FF6767] transition-all cursor-pointer text'>Not Started</button>
-                    <button onClick={() => handleStatusChange(task.id, 'Completed')} className='flex justify-start items-center w-full h-6 pl-4 hover:bg-[#FF6767] transition-all cursor-pointer'>Completed</button>
-
-                    <div onClick={()=>{setEditTask(task), AddPop(), handleAddEdit('Edit')}} className='flex justify-start items-center w-full h-6 pl-4 hover:bg-[#FF6767] transition-all cursor-pointer'>Edit</div>
+                    <button onClick={() => {handleStatusChange(task.id, 'Completed'),setActiveMenuId(null);}} className='flex justify-start items-center w-full h-6 pl-4 hover:bg-[#FF6767] transition-all cursor-pointer'>Completed</button>
+                    <button onClick={()=>{setEditTask(task), AddPop(), handleAddEdit('Edit'),setActiveMenuId(null);}} className='flex justify-start items-center w-full h-6 pl-4 hover:bg-[#FF6767] transition-all cursor-pointer'>Edit</button>
                     <button onClick={()=>{handleDelete(task.id)}} className='flex justify-start items-center w-full h-6 pl-4 hover:bg-[#FF6767] transition-all rounded-b-xl cursor-pointer'>Delete</button>
                 </div>
                 )}
@@ -185,7 +197,7 @@ function Hero({ searchQuery }) {
         </div>
 
     {/* main content of right section end */}
-    <Create toggle={CreateOpen} setToggle={setCreateOpen} addTask={addTask} AddEdit={addedittoggle}  editTask={editTask} setEditTask={setEditTask}  updateTask={updateTask}/>
+    <Create currentDates={currentDate} toggle={CreateOpen} setToggle={setCreateOpen} addTask={addTask} AddEdit={addedittoggle}  editTask={editTask} setEditTask={setEditTask}  updateTask={updateTask}/>
     </div>
   )
 }

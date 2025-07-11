@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import {v4 as uuidv4} from 'uuid'
 
-function Create({toggle, setToggle, addTask, AddEdit, editTask, setEditTask, updateTask}) {
+function Create({toggle, setToggle, addTask, AddEdit, editTask, setEditTask, updateTask, currentDates}) {
     const ExitPop = () => {setToggle('hidden');};
 
     const [form, setForm]=useState({title:'',date:'',desc:'', status:''})
@@ -23,7 +23,7 @@ function Create({toggle, setToggle, addTask, AddEdit, editTask, setEditTask, upd
     updateTask({ ...editTask, ...form });
     setEditTask(null);
   } else {
-    const newTask = { ...form, id: uuidv4() };
+    const newTask = { ...form, date: currentDates, id: uuidv4() };
     addTask(newTask);
   }
 
@@ -43,7 +43,7 @@ function Create({toggle, setToggle, addTask, AddEdit, editTask, setEditTask, upd
         </div>
         <div className='w-[100%] h-auto flex flex-col justify-center items-start gap-2'>
             <div className='w-[90%] h-auto text-xl font-semibold'>Date</div>
-            <input onChange={handleChange} value={form.date} type='date' name='date' id='date' className='border-2 border-gray-400 rounded-md px-2 py-1 w-[100%] md:w-[90%] h-auto text-xl text-gray-500'/>
+            <input onChange={handleChange} value={form.date || currentDates} type='date' name='date' id='date' className='border-2 border-gray-400 rounded-md px-2 py-1 w-[100%] md:w-[90%] h-auto text-xl text-gray-500'/>
         </div>
         <div className='w-[100%] h-auto flex flex-col justify-center items-start gap-2'>
             <div className='w-[90%] h-auto text-xl font-semibold'>Description</div>
