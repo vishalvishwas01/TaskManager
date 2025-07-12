@@ -1,1 +1,7 @@
 @import "tailwindcss";
+
+.react-datepicker__day--highlighted-custom-1 {
+  background-color: #FF6767;
+   color: white !important;
+  border-radius: 50%;
+}

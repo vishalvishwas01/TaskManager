@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Dashboard from "./Components/Dashboard/Dashboard";
-import Settings from "./Components/Settings/Settings";
+import MyTask from "./Components/MyTask/MyTask";
 
 function App() {
   return (
@@ -8,7 +8,7 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Dashboard/>}></Route>
-          <Route path="/Settings" element={<Settings/>}></Route>
+          <Route path="/MyTask" element={<MyTask/>}></Route>
         </Routes>
       </BrowserRouter>
     </>

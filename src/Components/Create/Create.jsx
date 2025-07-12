@@ -5,31 +5,42 @@ function Create({toggle, setToggle, addTask, AddEdit, editTask, setEditTask, upd
     const ExitPop = () => {setToggle('hidden');};
 
     const [form, setForm]=useState({title:'',date:'',desc:'', status:''})
-    useEffect(() => {
-      if (editTask) {
-        setForm({
-          title: editTask.title,
-          date: editTask.date,
-          desc: editTask.desc,
-          status: editTask.status || 'Not Started'
-        });
-      }
-    }, [editTask]);
+   useEffect(() => {
+  if (editTask) {
+    // Edit Mode
+    setForm({
+      title: editTask.title,
+      date: editTask.date,
+      desc: editTask.desc,
+      status: editTask.status || 'Not Started'
+    });
+  } else {
+    // Add Mode
+    setForm(prev => ({
+      ...prev,
+      date: currentDates,
+      status: 'Not Started'
+    }));
+  }
+}, [editTask, currentDates]);
+
 
     const handleChange = (e)=>{setForm({...form,[e.target.name]:e.target.value})}
 
-    const handleDone = () => {
+   const handleDone = () => {
   if (editTask) {
     updateTask({ ...editTask, ...form });
     setEditTask(null);
   } else {
-    const newTask = { ...form, date: currentDates, id: uuidv4() };
+    const finalDate = form.date || currentDates; // ✅ use `currentDates` as passed in props
+    const newTask = { ...form, date: finalDate, id: uuidv4() };
     addTask(newTask);
   }
 
-  setForm({ title: '', date: '', desc: '' });
+  setForm({ title: '', date: '', desc: '', status: '' });
   ExitPop();
 };
+
 
       
   return (
@@ -43,11 +54,11 @@ function Create({toggle, setToggle, addTask, AddEdit, editTask, setEditTask, upd
         </div>
         <div className='w-[100%] h-auto flex flex-col justify-center items-start gap-2'>
             <div className='w-[90%] h-auto text-xl font-semibold'>Date</div>
-            <input onChange={handleChange} value={form.date || currentDates} type='date' name='date' id='date' className='border-2 border-gray-400 rounded-md px-2 py-1 w-[100%] md:w-[90%] h-auto text-xl text-gray-500'/>
+            <input onChange={handleChange} value={form.date ? form.date : currentDates} type='date' name='date' id='date' className='border-2 border-gray-400 rounded-md px-2 py-1 w-[100%] md:w-[90%] h-auto text-xl text-gray-500'/>
         </div>
         <div className='w-[100%] h-auto flex flex-col justify-center items-start gap-2'>
             <div className='w-[90%] h-auto text-xl font-semibold'>Description</div>
-            <textarea onChange={handleChange} value={form.desc} name='desc' id='desc' className='border-2 border-gray-400 rounded-md px-2 py-1 w-full md:w-[90%] text-2xl resize-none' placeholder='Write description here...'rows={4}></textarea>
+            <textarea onChange={handleChange} value={form.desc} name='desc' id='desc' className='border-2 border-gray-400 rounded-md px-2 py-1 w-full md:w-[90%]  h-auto text-2xl resize-none' placeholder='Write description here...'rows={4}></textarea>
         </div>
       </div>
       <div className='w-[100%] h-10 flex justify-start items-center px-2'><button onClick={handleDone} className=' w-20 h-10 rounded-xl border-none [background-color:#FF6767] text-white text-xl cursor-pointer hover:[background-color:#fd2121] transition-all'>Done</button></div>

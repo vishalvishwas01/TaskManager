@@ -1,10 +1,10 @@
 import { useState } from "react";
-import Navbar from "./Navbar";
-import Menu from "./Menu";
+import Navbar from "../Dashboard/Navbar";
+import Menu from "../Dashboard/Menu";
 import Hero from "./Hero";
 
 
-function Dashboard() {
+function MyTask() {
   const [tasks, setTasks] = useState([])
   const [searchQuery, setSearchQuery] = useState("")
   const [currentDate, setCurrentDate] = useState(() => {
@@ -27,4 +27,4 @@ function Dashboard() {
   );
 }
 
-export default Dashboard;
+export default MyTask;
