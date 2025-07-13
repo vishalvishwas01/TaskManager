@@ -1,5 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import Red from '../../assets/Red.svg'
+import blue from '../../assets/blue.svg'
+import green from '../../assets/green.svg'
 import Create from '../Create/Create'
 import Myedit from '../../assets/Myedit.svg'
 import Mydelete from '../../assets/Mydelete.svg'
@@ -142,6 +144,13 @@ const clearHistory = async () => {
         const Progresspercentage = getPercentage(startedCount);
         const Completedpercentage = getPercentage(completedCount);
 
+        const getCircleIcon = (status) => {
+          if (status === 'Completed') return green;
+          if (status === 'Started') return blue;
+          return Red;
+          };
+                
+
 
       
   return (
@@ -172,7 +181,7 @@ const clearHistory = async () => {
             <div className='flex flex-col justify-start items-center gap-2 w-[100%] h-full py-2 overflow-y-auto overflow-x-hidden'>
           {tasks.filter(task => task.date < currentDate && task.title.toLowerCase().includes(searchQuery.toLowerCase())).filter(task => statusFilter === 'All' ? true : task.status === statusFilter).sort((a, b) => new Date(b.date) - new Date(a.date)).map(task => (
                 <button  key={task.id} onClick={() => setSelectedTask(task)} className='cursor-pointer relative flex gap-1 border-2 [border-color:#A1A3AB]  h-auto w-[92dvw] md:w-[89dvw] lg:w-[95%] rounded-2xl px-2  py-2'>
-                    <div className=' w-[10%] flex items-start justify-center'><img src={Red}/></div>
+                    <div className=' w-[10%] flex items-start justify-center'><img src={getCircleIcon(task.status)}/></div>
                     <div className='flex flex-col w-[90%] flex-grow min-w-0 gap-2'>
                         <div className='flex justify-start w-[100%] h-auto text-xl font-semibold text-black break-words'>{task.title}</div>
                         <div className='flex justify-start w-[100%] h-auto text-[16px] font-semibold text-gray-500 whitespace-pre-wrap break-words line-clamp-3'>{task.desc}</div>
@@ -214,7 +223,7 @@ const clearHistory = async () => {
                             </div>
                             )}
                             </div>
-                         <div className=' w-[10%] flex items-start justify-center'><img src={Red}/></div>
+                         <div className=' w-[10%] flex items-start justify-center'><img src={getCircleIcon(selectedTask.status)}/></div>
                     </div>
                 ) : (
                     <p className='text-gray-400'>Click a task to see its details here.</p>

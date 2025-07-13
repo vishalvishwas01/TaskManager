@@ -1,5 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import Red from '../../assets/Red.svg'
+import blue from '../../assets/blue.svg'
+import green from '../../assets/green.svg'
 import edit from '../../assets/edit.svg'
 import Statusimg from '../../assets/Statusimg.svg'
 import greenDot from '../../assets/greenDot.svg'
@@ -41,14 +43,7 @@ function Hero({ searchQuery, currentDate, tasks, setTasks }) {
     const Completedtask = tasks.filter(task => task.status === "Completed")
     .filter((task) => currentDate ? task.date === currentDate : true);
 
-    // const handleStatusChange = async(id, newStatus) => {
-    //             setTasks(prevTasks =>prevTasks.map(task =>task.id === id ? {...task, status: newStatus, completed: newStatus === 'Completed' ? true : false}: task));
-    //             await fetch(`http://localhost:3000/tasks/${id}`, {
-    //     method: "PUT",
-    //     headers: { "Content-Type": "application/json" },
-    //     body: JSON.stringify({ ...task, status: newStatus, completed: newStatus === 'Completed' })
-    //     });
-    // };
+
     const handleStatusChange = async (taskId, newStatus) => {
   try {
     const res = await fetch(`http://localhost:3000/tasks/${taskId}`, {
@@ -122,9 +117,20 @@ setTasks(tasks.filter(t => t.id !== id));
         const Notpercentage = getPercentage(notStartedCount);
         const Progresspercentage = getPercentage(startedCount);
         const Completedpercentage = getPercentage(completedCount);
-        const TodoTasks = tasks.filter(
-  (task) => task.status === 'Not Started' || task.status === 'Started' || task.status === ''
-);
+
+        
+        const TodoTasks = tasks
+        .filter((task) => task.status === 'Not Started' || task.status === 'Started' || task.status === '');
+
+
+            const getCircleIcon = (status) => {
+            if (status === 'Completed') return green;
+            if (status === 'Started') return blue;
+            return Red;
+        };
+
+
+
 
 
 
@@ -146,7 +152,7 @@ setTasks(tasks.filter(t => t.id !== id));
             <div className='flex flex-col justify-start items-center gap-2 w-[100%] h-full py-2 overflow-y-auto overflow-x-hidden'>
             {TodoTasks.filter(task => !task.completed &&  task.title.toLowerCase().includes(searchQuery.toLowerCase())&&(currentDate ? task.date === currentDate : true)).map(task => (
                 <div key={task._id} className='relative flex gap-1 border-2 [border-color:#A1A3AB]  h-auto w-[92dvw] md:w-[89dvw] lg:w-[95%] rounded-2xl px-2  py-2'>
-                    <div className=' w-[10%] flex items-start justify-center'><img src={Red}/></div>
+                    <div className={`w-[10%] flex items-start justify-center`}><img src={getCircleIcon(task.status)}/></div>
                     <div className='flex flex-col w-[90%] flex-grow min-w-0 gap-2'>
                         <div className=' w-[100%] h-auto text-xl font-semibold text-black break-words'>{task.title}</div>
                         <div className='w-[100%] h-auto text-[16px] font-semibold text-gray-500 whitespace-pre-wrap break-words line-clamp-3'>{task.desc}</div>
@@ -201,7 +207,7 @@ setTasks(tasks.filter(t => t.id !== id));
             <div className='flex flex-col justify-start items-center gap-2 w-[100%] h-[460px] py-2 overflow-y-auto overflow-x-hidden'>
             {Completedtask.map(task => (
                 <div key={task.id} className='relative flex gap-1 border-2 [border-color:#A1A3AB]  h-auto w-[92dvw] md:w-[89dvw] lg:w-[95%] rounded-2xl px-2  py-2'>
-                <div className=' w-[10%] flex items-start justify-center'><img src={Red}/></div>
+                <div className=' w-[10%] flex items-start justify-center'><img src={getCircleIcon(task.status)}/></div>
                 <div className='flex flex-col w-[90%] flex-grow min-w-0 gap-2'>
                     <div className=' w-[100%] h-auto text-xl font-semibold text-black break-words'>{task.title}</div>
                     <div className='w-[100%] h-auto text-[16px] font-semibold text-gray-500 whitespace-pre-wrap break-words line-clamp-3'>{task.desc}</div>
@@ -234,7 +240,7 @@ setTasks(tasks.filter(t => t.id !== id));
             <div className='flex flex-col justify-start items-center gap-2 w-[100%] h-[660px] py-2 overflow-y-auto overflow-x-hidden'>
            {tasks.filter(task => task.date < currentDate).sort((a, b) => new Date(b.date) - new Date(a.date)).map(task => (
                  <div key={task.id} className='relative flex gap-1 border-2 [border-color:#A1A3AB]  h-auto w-[92dvw] md:w-[89dvw] lg:w-[95%] rounded-2xl px-2  py-2'>
-                <div className=' w-[10%] flex items-start justify-center'><img src={Red}/></div>
+                <div className=' w-[10%] flex items-start justify-center'><img src={getCircleIcon(task.status)}/></div>
                 <div className='flex flex-col w-[90%] flex-grow min-w-0 gap-2'>
                     <div className=' w-[100%] h-auto text-xl font-semibold text-black break-words'>{task.title}</div>
                     <div className='w-[100%] h-auto text-[16px] font-semibold text-gray-500 whitespace-pre-wrap break-words line-clamp-3'>{task.desc}</div>
