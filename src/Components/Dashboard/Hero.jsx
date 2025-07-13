@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import Navbar from './Navbar';
 import Red from '../../assets/Red.svg'
 import edit from '../../assets/edit.svg'
 import Statusimg from '../../assets/Statusimg.svg'
@@ -10,6 +11,8 @@ import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 
 function Hero({ searchQuery, currentDate, tasks, setTasks }) {
+    
+
     const formatDate = (isoDate) => {
         if (!isoDate) return ""; // guard against undefined/null
       
@@ -36,13 +39,42 @@ function Hero({ searchQuery, currentDate, tasks, setTasks }) {
         }
       };
 
-    const Completedtask = tasks
-    .filter((task) => task.completed)
+    const Completedtask = tasks.filter(task => task.status === "Completed")
     .filter((task) => currentDate ? task.date === currentDate : true);
 
-    const handleStatusChange = (id, newStatus) => {
-        setTasks(prevTasks =>prevTasks.map(task =>task.id === id ? {...task, status: newStatus, completed: newStatus === 'Completed' ? true : false}: task));
-    };
+    // const handleStatusChange = async(id, newStatus) => {
+    //             setTasks(prevTasks =>prevTasks.map(task =>task.id === id ? {...task, status: newStatus, completed: newStatus === 'Completed' ? true : false}: task));
+    //             await fetch(`http://localhost:3000/tasks/${id}`, {
+    //     method: "PUT",
+    //     headers: { "Content-Type": "application/json" },
+    //     body: JSON.stringify({ ...task, status: newStatus, completed: newStatus === 'Completed' })
+    //     });
+    // };
+    const handleStatusChange = async (taskId, newStatus) => {
+  try {
+    const res = await fetch(`http://localhost:3000/tasks/${taskId}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ status: newStatus })
+    });
+
+    if (res.ok) {
+      // update task in local state if needed
+      setTasks(prevTasks =>
+        prevTasks.map(task =>
+          task._id.toString() === taskId.toString() ? { ...task, status: newStatus } : task
+        )
+      );
+    } else {
+      console.error("Failed to update status");
+    }
+  } catch (error) {
+    console.error("Error:", error);
+  }
+};
+
 
     const [CreateOpen, setCreateOpen]= useState('hidden')
     const AddPop = ()=>{setCreateOpen(CreateOpen==='hidden'?'flex':'hidden')}
@@ -65,8 +97,11 @@ function Hero({ searchQuery, currentDate, tasks, setTasks }) {
     };
     }, []);
 
-    const handleDelete = (id)=>{
+    const handleDelete = async(id)=>{
         setTasks(tasks.filter((task)=>task.id !==id))
+        await fetch(`http://localhost:3000/tasks/${id}`, { method: "DELETE" });
+setTasks(tasks.filter(t => t.id !== id));
+
     }
 
     const [editTask, setEditTask] = useState(null);
@@ -85,6 +120,10 @@ function Hero({ searchQuery, currentDate, tasks, setTasks }) {
         const Notpercentage = getPercentage(notStartedCount);
         const Progresspercentage = getPercentage(startedCount);
         const Completedpercentage = getPercentage(completedCount);
+        const TodoTasks = tasks.filter(
+  (task) => task.status === 'Not Started' || task.status === 'Started' || task.status === ''
+);
+
 
 
       
@@ -103,8 +142,8 @@ function Hero({ searchQuery, currentDate, tasks, setTasks }) {
 
             {/* main content of left section start */}
             <div className='flex flex-col justify-start items-center gap-2 w-[100%] h-full py-2 overflow-y-auto overflow-x-hidden'>
-            {tasks.filter(task => !task.completed &&  task.title.toLowerCase().includes(searchQuery.toLowerCase())&&(currentDate ? task.date === currentDate : true)).map(task => (
-                <div key={task.id} className='relative flex gap-1 border-2 [border-color:#A1A3AB]  h-auto w-[92dvw] md:w-[89dvw] lg:w-[95%] rounded-2xl px-2  py-2'>
+            {TodoTasks.filter(task => !task.completed &&  task.title.toLowerCase().includes(searchQuery.toLowerCase())&&(currentDate ? task.date === currentDate : true)).map(task => (
+                <div key={task._id} className='relative flex gap-1 border-2 [border-color:#A1A3AB]  h-auto w-[92dvw] md:w-[89dvw] lg:w-[95%] rounded-2xl px-2  py-2'>
                     <div className=' w-[10%] flex items-start justify-center'><img src={Red}/></div>
                     <div className='flex flex-col w-[90%] flex-grow min-w-0 gap-2'>
                         <div className=' w-[100%] h-auto text-xl font-semibold text-black break-words'>{task.title}</div>

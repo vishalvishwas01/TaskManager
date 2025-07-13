@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Navbar from "../Dashboard/Navbar";
 import Menu from "../Dashboard/Menu";
 import Hero from "./Hero";
@@ -14,6 +14,16 @@ function MyTask() {
     const day = String(today.getDate()).padStart(2, "0");
     return `${year}-${month}-${day}`;
   });
+
+   useEffect(() => {
+  async function loadTasks() {
+    const res = await fetch("http://localhost:3000/tasks");
+    const data = await res.json();
+    setTasks(data.map(t => ({ ...t, id: t._id })));
+  }
+  loadTasks();
+}, []);
+
   
   return (
     <div className="overflow-x-hidden flex flex-col gap-8">

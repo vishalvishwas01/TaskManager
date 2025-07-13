@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
-import Navbar from "./Navbar";
-import Menu from "./Menu";
+import Navbar from "../Dashboard/Navbar";
+import Menu from "../Dashboard/Menu";
 import Hero from "./Hero";
 
 
-function Dashboard() {
+function History() {
   const [tasks, setTasks] = useState([])
   const [searchQuery, setSearchQuery] = useState("")
   const [currentDate, setCurrentDate] = useState(() => {
@@ -15,7 +15,7 @@ function Dashboard() {
     return `${year}-${month}-${day}`;
   });
 
-  useEffect(() => {
+   useEffect(() => {
   async function loadTasks() {
     const res = await fetch("http://localhost:3000/tasks");
     const data = await res.json();
@@ -37,4 +37,4 @@ function Dashboard() {
   );
 }
 
-export default Dashboard;
+export default History;
