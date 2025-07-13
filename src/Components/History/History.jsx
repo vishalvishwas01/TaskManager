@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import Navbar from "../Dashboard/Navbar";
-import Menu from "../Dashboard/Menu";
+import Navbar from "../Common/Navbar";
+import Menu from "../Common/Menu";
 import Hero from "./Hero";
 
 

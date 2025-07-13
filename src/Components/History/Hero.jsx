@@ -150,7 +150,7 @@ const clearHistory = async () => {
             {/* top header of left section start */}
             <div className='flex flex-col gap-2 w-[95%] h-20 '>
                 <div className='flex gap-10 justify-between items-center w-[100%] h-10'>
-                    <div className=' w-30 h-10 flex items-center gap-2 [color:#FF6767] text-xl font-semibold'><svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="34px" height="34px" viewBox="0 0 64 64" enable-background="new 0 0 64 64" xml:space="preserve" fill="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <polygon fill="none" stroke="#000000" stroke-width="0.968" stroke-miterlimit="10" points="55,1 55,54 59,62 63,54 63,1 "></polygon> <line fill="none" stroke="#000000" stroke-width="0.968" stroke-miterlimit="10" x1="55" y1="11" x2="63" y2="11"></line> <polyline fill="none" stroke="#000000" stroke-width="0.968" stroke-miterlimit="10" points="14,8 1,8 1,63 45,63 45,8 32,8 "></polyline> <polygon fill="none" stroke="#000000" stroke-width="0.968" stroke-miterlimit="10" points="27,5 27,1 19,1 19,5 15,5 13,13 33,13 31,5 "></polygon> </g></svg>History</div>
+                    <div className=' w-30 h-10 flex items-center gap-2 [color:#FF6767] text-xl font-semibold'><svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" width="34px" height="34px" viewBox="0 0 64 64" enableBackground="new 0 0 64 64" xmlSpace="preserve" fill="#000000"><g id="SVGRepo_bgCarrier" strokeWidth="0"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"> <polygon fill="none" stroke="#000000" strokeWidth="0.968" strokeMiterlimit="10" points="55,1 55,54 59,62 63,54 63,1 "></polygon> <line fill="none" stroke="#000000" strokeWidth="0.968" strokeMiterlimit="10" x1="55" y1="11" x2="63" y2="11"></line> <polyline fill="none" stroke="#000000" strokeWidth="0.968" strokeMiterlimit="10" points="14,8 1,8 1,63 45,63 45,8 32,8 "></polyline> <polygon fill="none" stroke="#000000" strokeWidth="0.968" strokeMiterlimit="10" points="27,5 27,1 19,1 19,5 15,5 13,13 33,13 31,5 "></polygon> </g></svg>History</div>
                     <button onClick={clearHistory}  className=' w-35 h-10 flex justify-center items-center font-semibold text-gray-400 cursor-pointer'>Clear history</button>
                 </div>
                 <div className=' h-10 flex justify-start items-center'>{formattedDate}</div>
@@ -159,9 +159,9 @@ const clearHistory = async () => {
 
             {/* filter section start */}
 
-            <div className='flex justify-center items-center gap-8 w-fullpx-2'>
+            <div className='flex justify-center items-center gap-4 sm:gap-8 w-full px-2 pl-2 pr-2'>
                 <button onClick={() => setStatusFilter('All')} className='bg-gray-300 hover:bg-gray-400 transition-all cursor-pointer py-1 px-2 rounded-md'>All</button>     
-                <button onClick={() => setStatusFilter('Not Started')} className='bg-red-300 hover:bg-red-400 transition-all cursor-pointer py-1 px-2 rounded-md'>Not started</button>
+                <button onClick={() => setStatusFilter('Not Started')} className='bg-red-300 hover:bg-red-400 transition-all cursor-pointer py-1 px-2 w-25 rounded-md'>Not started</button>
                 <button onClick={() => setStatusFilter('Started')} className='bg-blue-300  hover:bg-blue-400 transition-all cursor-pointer py-1 px-2 rounded-md'>Pending</button>
                 <button onClick={() => setStatusFilter('Completed')} className='bg-green-300 hover:bg-green-400 transition-all cursor-pointer py-1 px-2 rounded-md'>Completed</button>
             </div>

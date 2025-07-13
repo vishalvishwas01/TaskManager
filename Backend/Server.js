@@ -86,8 +86,6 @@ app.delete("/tasks/before/:date", async (req, res) => {
   }
 });
 
-
-
 app.listen(port, () => {
   console.log(`Listening on http://localhost:${port}`);
 });
