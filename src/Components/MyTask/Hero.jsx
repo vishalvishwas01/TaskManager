@@ -3,6 +3,8 @@ import Red from '../../assets/Red.svg'
 import Create from '../Create/Create'
 import Myedit from '../../assets/Myedit.svg'
 import Mydelete from '../../assets/Mydelete.svg'
+
+
 import 'react-circular-progressbar/dist/styles.css';
 
 function Hero({ searchQuery, currentDate, tasks, setTasks }) {
@@ -104,11 +106,10 @@ setTasks(tasks.filter(t => t.id !== id));
   const updatedTasks = tasks.map(task => task.id === updatedTask.id ? updatedTask : task);
   setTasks(updatedTasks);
 
-  // 🔥 Fix: update selected task if currently selected
   if (selectedTask?.id === updatedTask.id) {
     setSelectedTask(updatedTask);
   }
-};
+        };
 
       
       const totalTasks = tasks.length;
