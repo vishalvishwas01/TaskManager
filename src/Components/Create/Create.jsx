@@ -4,7 +4,7 @@ import {v4 as uuidv4} from 'uuid'
 function Create({toggle, setToggle, addTask, AddEdit, editTask, setEditTask, updateTask, currentDates}) {
     const ExitPop = () => {setToggle('hidden');};
 
-    const [form, setForm]=useState({title:'',date:'',desc:'', status:''})
+    const [form, setForm]=useState({title:'',date:'',desc:'', status:'Not Started'})
     useEffect(() => {
       if (editTask) {
         setForm({
@@ -29,7 +29,7 @@ function Create({toggle, setToggle, addTask, AddEdit, editTask, setEditTask, upd
 });
 
   } else {
-    const newTask = { ...form, date: currentDates, id: uuidv4() };
+    const newTask = { ...form, date: currentDates, id: uuidv4(),status: form.status || 'Not Started', };
     addTask(newTask);
     await fetch("http://localhost:3000/tasks", {
   method: "POST",

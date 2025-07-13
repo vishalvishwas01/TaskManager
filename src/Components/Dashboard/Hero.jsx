@@ -26,7 +26,7 @@ function Hero({ searchQuery, currentDate, tasks, setTasks }) {
     const formattedDate = formatDate(currentDate);
    
 
-    const addTask = (task) => {setTasks([...tasks, task])};
+    const addTask = (task) => {setTasks(prev => [...prev, { ...task, id: task._id }])};
 
     const [addedittoggle, setAddEditToggle]=useState('Add New Task')
     const handleAddEdit = (mode) => {
@@ -62,11 +62,14 @@ function Hero({ searchQuery, currentDate, tasks, setTasks }) {
 
     if (res.ok) {
       // update task in local state if needed
-      setTasks(prevTasks =>
-        prevTasks.map(task =>
-          task._id.toString() === taskId.toString() ? { ...task, status: newStatus } : task
-        )
-      );
+     setTasks(prevTasks =>
+  prevTasks.map(task =>
+    (task._id?.toString() === taskId.toString() || task.id?.toString() === taskId.toString())
+      ? { ...task, status: newStatus }
+      : task
+  )
+);
+
     } else {
       console.error("Failed to update status");
     }

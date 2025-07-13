@@ -70,6 +70,23 @@ app.delete("/tasks/:id", async (req, res) => {
   res.json({ success: true });
 });
 
+// DELETE all tasks before a specific date
+app.delete("/tasks/before/:date", async (req, res) => {
+  const { date } = req.params;
+
+  try {
+    const result = await collection.deleteMany({
+      date: { $lt: date }
+    });
+
+    res.json({ success: true, deletedCount: result.deletedCount });
+  } catch (err) {
+    console.error("Failed to delete tasks:", err);
+    res.status(500).json({ success: false, error: "Failed to delete tasks" });
+  }
+});
+
+
 
 app.listen(port, () => {
   console.log(`Listening on http://localhost:${port}`);
