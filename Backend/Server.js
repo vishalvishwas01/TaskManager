@@ -18,13 +18,6 @@ app.use(cors());
 app.use(bodyparser.json());
 const collection = client.db(dbName).collection("tasks");
 
-// app.get("/", async (req, res) => {
-//   const db = client.db(dbName);
-//   const collection = db.collection("test");
-//   const findResult = await collection.find({}).toArray();
-//   res.json(findResult);
-// });
-
 // CREATE a task
 app.post("/tasks", async (req, res) => {
   const task = req.body;
@@ -38,15 +31,6 @@ app.get("/tasks", async (_, res) => {
 });
 
 // UPDATE a task by id
-// app.put("/tasks/:id", async (req, res) => {
-//   const { id } = req.params;
-//   const updated = req.body;
-//   await collection.updateOne(
-//     { _id: new ObjectId(id) },
-//     { $set: updated }
-//   );
-//   res.json({ ...updated, _id: id });
-// });
 app.put("/tasks/:id", async (req, res) => {
   const { id } = req.params;
   const updates = req.body;
