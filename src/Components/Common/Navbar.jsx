@@ -60,7 +60,7 @@ const [showMenu, setShowMenu] = useState(false);
             </svg>
       </button>
       <div className='flex-grow min-w-[200px] max-w-xl 2xl:ml-[200px] ml-0'>
-        <input type='text' value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} placeholder='Search title here' className='w-full h-10 px-4 rounded-2xl shadow-sm text-sm bg-white outline-none' />
+        <input type='text'  value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} placeholder='Search title here' className='w-full h-10 px-4 rounded-2xl shadow-sm text-[16px] bg-white outline-none' />
       </div>
       <div className='min-w-[160px] flex-shrink-0 rounded-md px-2 py-1 flex items-center  '>
        <DatePicker

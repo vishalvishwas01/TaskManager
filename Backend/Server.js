@@ -86,6 +86,34 @@ app.delete("/tasks/before/:date", async (req, res) => {
   }
 });
 
+// DELETE all tasks for a specific date
+app.delete('/tasks/date/:date', async (req, res) => {
+  const { date } = req.params;
+
+  try {
+    const result = await collection.deleteMany({ date });
+    res.json({ success: true, deletedCount: result.deletedCount });
+  } catch (err) {
+    console.error("Failed to delete tasks by date:", err);
+    res.status(500).json({ success: false, error: "Failed to delete tasks by date" });
+  }
+});
+
+// DELETE all completed tasks for a specific date
+app.delete("/tasks/clear/completed/:date", async (req, res) => {
+  const { date } = req.params;
+
+  try {
+    const result = await collection.deleteMany({ status: "Completed", date });
+    res.json({ success: true, deletedCount: result.deletedCount });
+  } catch (err) {
+    console.error("Failed to delete completed tasks:", err);
+    res.status(500).json({ success: false, error: "Failed to delete completed tasks" });
+  }
+});
+
+
+
 app.listen(port, () => {
   console.log(`Listening on http://localhost:${port}`);
 });

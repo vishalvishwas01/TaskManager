@@ -12,6 +12,9 @@ import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 
 function Hero({ searchQuery, currentDate, tasks, setTasks }) {
+
+    const [del, setDel] = useState('hidden')
+        const popupRef = useRef(null);
     
 
     const formatDate = (isoDate) => {
@@ -40,8 +43,12 @@ function Hero({ searchQuery, currentDate, tasks, setTasks }) {
         }
       };
 
-    const Completedtask = tasks.filter(task => task.status === "Completed")
-    .filter((task) => currentDate ? task.date === currentDate : true);
+    // const Completedtask = tasks.filter(task => task.status === "Completed")
+    // .filter((task) => currentDate ? task.date === currentDate : true);
+    const Completedtask = tasks
+    .filter(task => task.status === 'Completed' &&
+        (currentDate ? task.date === currentDate : true)
+    );
 
 
     const handleStatusChange = async (taskId, newStatus) => {
@@ -82,17 +89,24 @@ function Hero({ searchQuery, currentDate, tasks, setTasks }) {
     const menuRef = useRef(null);
 
     useEffect(() => {
-    const handleClickOutside = (event) => {
-        if (menuRef.current && !menuRef.current.contains(event.target)) {
-        setActiveMenuId(null);
-        }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-        document.removeEventListener('mousedown', handleClickOutside);
-    };
-    }, []);
+        const handleClickOutside = (event) => {
+          // Close dropdown menu if clicked outside
+          if (menuRef.current && !menuRef.current.contains(event.target)) {
+            setActiveMenuId(null);
+          }
+      
+          // Close 'Clear All' popup if clicked outside
+          if (popupRef.current && !popupRef.current.contains(event.target)) {
+            setDel('hidden');
+          }
+        };
+      
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+          document.removeEventListener('mousedown', handleClickOutside);
+        };
+      }, []);
+   
 
     const handleDelete = async(id)=>{
         setTasks(tasks.filter((task)=>task.id !==id))
@@ -119,8 +133,13 @@ setTasks(tasks.filter(t => t.id !== id));
         const Completedpercentage = getPercentage(completedCount);
 
         
+        // const TodoTasks = tasks
+        // .filter((task) => task.status === 'Not Started' || task.status === 'Started' || task.status === '');
         const TodoTasks = tasks
-        .filter((task) => task.status === 'Not Started' || task.status === 'Started' || task.status === '');
+        .filter(task => (task.status === 'Not Started' || task.status === 'Started' || !task.status) &&
+            (currentDate ? task.date === currentDate : true) &&
+            task.title.toLowerCase().includes(searchQuery.toLowerCase())
+        );
 
 
             const getCircleIcon = (status) => {
@@ -129,6 +148,26 @@ setTasks(tasks.filter(t => t.id !== id));
             return Red;
         };
 
+        const handleClearCompleted = async () => {
+            try {
+                const res = await fetch(`http://localhost:3000/tasks/clear/completed/${currentDate}`, {
+                method: "DELETE",
+                });
+
+                if (res.ok) {
+                const deletedIds = await res.json();
+                setTasks(prev => prev.filter(task => !(task.status === "Completed" && task.date === currentDate)));
+                } else {
+                console.error("Failed to delete completed tasks.");
+                }
+            } catch (err) {
+                console.error("Error clearing completed tasks:", err);
+            }
+            };
+
+            const TaskHistory = tasks
+  .filter(task => task.date < currentDate)
+  .sort((a, b) => new Date(b.date) - new Date(a.date));
 
 
 
@@ -150,30 +189,35 @@ setTasks(tasks.filter(t => t.id !== id));
 
             {/* main content of left section start */}
             <div className='flex flex-col justify-start items-center gap-2 w-[100%] h-full py-2 overflow-y-auto overflow-x-hidden'>
-            {TodoTasks.filter(task => !task.completed &&  task.title.toLowerCase().includes(searchQuery.toLowerCase())&&(currentDate ? task.date === currentDate : true)).map(task => (
+            {TodoTasks.length === 0 ? (
+                <button onClick={()=>{AddPop(), handleAddEdit('Add')}} className='text-gray-500 text-xl font-semibold cursor-pointer border-2 h-[70%] w-[70%] border-dashed'>Add some tasks first</button>
+            ) : (
+                TodoTasks.map(task => (
                 <div key={task._id} className='relative flex gap-1 border-2 [border-color:#A1A3AB]  h-auto w-[92dvw] md:w-[89dvw] lg:w-[95%] rounded-2xl px-2  py-2'>
                     <div className={`w-[10%] flex items-start justify-center`}><img src={getCircleIcon(task.status)}/></div>
                     <div className='flex flex-col w-[90%] flex-grow min-w-0 gap-2'>
-                        <div className=' w-[100%] h-auto text-xl font-semibold text-black break-words'>{task.title}</div>
-                        <div className='w-[100%] h-auto text-[16px] font-semibold text-gray-500 whitespace-pre-wrap break-words line-clamp-3'>{task.desc}</div>
-                        <div className='flex flex-wrap gap-2 w-[100%] h-auto mt-2 justify-start items-center'>
-                            <div className='justify-center items-center h-8'>Status: <span className={task.status === 'Completed' ? 'text-green-500' : task.status === 'Started' ? 'text-blue-500' : 'text-red-400'}>{task.status || 'Not Started'}</span></div>
-                            <div className='justify-center items-center h-8 text-gray-400'>Created on: {task.date}</div>
-                        </div>
+                    <div className=' w-[100%] h-auto text-xl font-semibold text-black break-words'>{task.title}</div>
+                    <div className='w-[100%] h-auto text-[16px] font-semibold text-gray-500 whitespace-pre-wrap break-words line-clamp-3'>{task.desc}</div>
+                    <div className='flex flex-wrap gap-2 w-[100%] h-auto mt-2 justify-start items-center'>
+                        <div className='justify-center items-center h-8'>Status: <span className={task.status === 'Completed' ? 'text-green-500' : task.status === 'Started' ? 'text-blue-500' : 'text-red-400'}>{task.status || 'Not Started'}</span></div>
+                        <div className='justify-center items-center h-8 text-gray-400'>Created on: {task.date}</div>
+                    </div>
                     </div>
                     <button onClick={() => toggleMenu(task.id)} className='w-[10%] flex justify-center items-start cursor-pointer'><img src={edit}/></button>
                     {activeMenuId === task.id && (
                     <div ref={menuRef} className='absolute top-8 right-9 flex flex-col justify-center items-center w-30 h-auto gap-2 border border-gray-300 rounded-xl bg-white shadow-md z-10'>
-                        <button onClick={()=>{handleStatusChange(task.id, 'Started'),setActiveMenuId(null);}} className='flex justify-start items-center w-full h-6 pl-4 hover:bg-[#FF6767] transition-all rounded-t-xl cursor-pointer'>Started</button>
-                        <button onClick={()=>{handleStatusChange(task.id, 'Completed'),setActiveMenuId(null);}} className='flex justify-start items-center w-full h-6 pl-4 hover:bg-[#FF6767] transition-all cursor-pointer text'>Completed</button>
-                        <button onClick={()=>{handleStatusChange(task.id, 'Not Started'),setActiveMenuId(null);}} className='flex justify-start items-center w-full h-6 pl-4 hover:bg-[#FF6767] transition-all cursor-pointer text'>Not Started</button>
-                        <button onClick={()=>{setEditTask(task), AddPop(), handleAddEdit('Edit').setActiveMenuId(null);}} className='flex justify-start items-center w-full h-6 pl-4 hover:bg-[#FF6767] transition-all cursor-pointer'>Edit</button>
+                        <button onClick={()=>{handleStatusChange(task.id, 'Started'); setActiveMenuId(null);}} className='flex justify-start items-center w-full h-6 pl-4 hover:bg-[#FF6767] transition-all rounded-t-xl cursor-pointer'>Started</button>
+                        <button onClick={()=>{handleStatusChange(task.id, 'Completed'); setActiveMenuId(null);}} className='flex justify-start items-center w-full h-6 pl-4 hover:bg-[#FF6767] transition-all cursor-pointer'>Completed</button>
+                        <button onClick={()=>{handleStatusChange(task.id, 'Not Started'); setActiveMenuId(null);}} className='flex justify-start items-center w-full h-6 pl-4 hover:bg-[#FF6767] transition-all cursor-pointer'>Not Started</button>
+                        <button onClick={()=>{setEditTask(task); AddPop(); handleAddEdit('Edit'); setActiveMenuId(null);}} className='flex justify-start items-center w-full h-6 pl-4 hover:bg-[#FF6767] transition-all cursor-pointer'>Edit</button>
                         <button onClick={()=>{handleDelete(task.id)}} className='flex justify-start items-center w-full h-6 pl-4 hover:bg-[#FF6767] transition-all rounded-b-xl cursor-pointer'>Delete</button>
                     </div>
                     )}
                 </div>
-            ))}
+                ))
+            )}
             </div>
+
             {/* main content of left section end */}
         </div>
 
@@ -203,31 +247,44 @@ setTasks(tasks.filter(t => t.id !== id));
             
             {/* main content bottom section end */}
             <div className='w-[100%] h-full rounded-2xl shadow-2xl py-2 pb-2 px-2'>
-            <div className='flex justify-start items-center gap-2 w-[98%] h-10 [color:#FF6767] text-xl font-semibold'><img src={Statusimg}/>Completed Task</div>
+            <div className='relative flex justify-between items-center gap-2 w-[98%] h-10 [color:#FF6767] text-xl font-semibold'><div className=' w-[200px] flex justify-center items-center gap-1'><img src={Statusimg}/>Completed Task</div> 
+            <button onClick={()=>{setDel('flex')}} className='cursor-pointer flex justify-end mr-2 text-gray-400 w-[55%]'>Clear All</button>
+            <div ref={popupRef} className={`${del} border-2 absolute w-50 top-8 right-10 flex-col justify-center items-center gap-4 px-4 py-2 rounded-xl bg-amber-100 z-10 opacity-100`}>
+                      <div className='text-2xl text-gray-500'>Are you sure ?</div>
+                      <div className='flex justify-center items-center gap-5'>
+                      <button onClick={()=>{setDel('hidden')}} className={`${del} text-xl rounded-xl px-2 py-1 bg-green-300 text-black`}>cancel</button>
+                      <button onClick={()=>{handleClearCompleted(), setDel('hidden')}} className=' text-xl text-black rounded-xl px-2 py-1 bg-red-300 font-semibold cursor-pointer'>Yes</button>
+                      </div>
+                    </div>
+            </div>
             <div className='flex flex-col justify-start items-center gap-2 w-[100%] h-[460px] py-2 overflow-y-auto overflow-x-hidden'>
-            {Completedtask.map(task => (
+            {Completedtask.length === 0 ? (
+                <div className='text-gray-500 text-xl font-semibold border-2 h-[70%] w-[80%] border-dashed flex justify-center items-center mt-10'>Complete some tasks first</div>
+            ) : (
+                Completedtask.map(task => (
                 <div key={task.id} className='relative flex gap-1 border-2 [border-color:#A1A3AB]  h-auto w-[92dvw] md:w-[89dvw] lg:w-[95%] rounded-2xl px-2  py-2'>
-                <div className=' w-[10%] flex items-start justify-center'><img src={getCircleIcon(task.status)}/></div>
-                <div className='flex flex-col w-[90%] flex-grow min-w-0 gap-2'>
+                    <div className=' w-[10%] flex items-start justify-center'><img src={getCircleIcon(task.status)} /></div>
+                    <div className='flex flex-col w-[90%] flex-grow min-w-0 gap-2'>
                     <div className=' w-[100%] h-auto text-xl font-semibold text-black break-words'>{task.title}</div>
                     <div className='w-[100%] h-auto text-[16px] font-semibold text-gray-500 whitespace-pre-wrap break-words line-clamp-3'>{task.desc}</div>
                     <div className='flex flex-wrap gap-2 w-[100%] h-auto mt-2 justify-start items-center'>
                         <div className='justify-center items-center h-8'>Status: <span className={task.status === 'Completed' ? 'text-green-500' : task.status === 'Started' ? 'text-blue-500' :'text-red-400'}>{task.status || 'Not Started'}</span></div>
                         <div className='justify-center items-center h-8 text-gray-400'>Created on:{task.date}</div>
                     </div>
+                    </div>
+                    <button onClick={() => toggleMenu(task.id)} className='w-[10%] flex justify-center items-start cursor-pointer'><img src={edit} /></button>
+                    {activeMenuId === task.id && (
+                    <div ref={menuRef} className='absolute top-8 right-9 flex flex-col justify-center items-center w-30 h-auto gap-2 border border-gray-300 rounded-xl bg-white shadow-md z-10'>
+                        <button onClick={() => {handleStatusChange(task.id, 'Started'); setActiveMenuId(null);}} className='flex justify-start items-center w-full h-6 pl-4 hover:bg-[#FF6767] transition-all rounded-t-xl cursor-pointer'>Started</button>
+                        <button onClick={() => {handleStatusChange(task.id, 'Not Started'); setActiveMenuId(null);}} className='flex justify-start items-center w-full h-6 pl-4 hover:bg-[#FF6767] transition-all cursor-pointer'>Not Started</button>
+                        <button onClick={() => {handleStatusChange(task.id, 'Completed'); setActiveMenuId(null);}} className='flex justify-start items-center w-full h-6 pl-4 hover:bg-[#FF6767] transition-all cursor-pointer'>Completed</button>
+                        <button onClick={() => {setEditTask(task); AddPop(); handleAddEdit('Edit'); setActiveMenuId(null);}} className='flex justify-start items-center w-full h-6 pl-4 hover:bg-[#FF6767] transition-all cursor-pointer'>Edit</button>
+                        <button onClick={() => {handleDelete(task.id)}} className='flex justify-start items-center w-full h-6 pl-4 hover:bg-[#FF6767] transition-all rounded-b-xl cursor-pointer'>Delete</button>
+                    </div>
+                    )}
                 </div>
-                <button onClick={() => toggleMenu(task.id)} className='w-[10%] flex justify-center items-start cursor-pointer'><img src={edit}/></button>
-                {activeMenuId === task.id && (
-                <div ref={menuRef} className='absolute top-8 right-9 flex flex-col justify-center items-center w-30 h-auto gap-2 border border-gray-300 rounded-xl bg-white shadow-md z-10'>
-                   <button onClick={() => {handleStatusChange(task.id, 'Started'),setActiveMenuId(null);}} className='flex justify-start items-center w-full h-6 pl-4 hover:bg-[#FF6767] transition-all rounded-t-xl cursor-pointer'>Started</button>
-                   <button onClick={()=>{handleStatusChange(task.id, 'Not Started'),setActiveMenuId(null);}} className='flex justify-start items-center w-full h-6 pl-4 hover:bg-[#FF6767] transition-all cursor-pointer text'>Not Started</button>
-                    <button onClick={() => {handleStatusChange(task.id, 'Completed'),setActiveMenuId(null);}} className='flex justify-start items-center w-full h-6 pl-4 hover:bg-[#FF6767] transition-all cursor-pointer'>Completed</button>
-                    <button onClick={()=>{setEditTask(task), AddPop(), handleAddEdit('Edit'),setActiveMenuId(null);}} className='flex justify-start items-center w-full h-6 pl-4 hover:bg-[#FF6767] transition-all cursor-pointer'>Edit</button>
-                    <button onClick={()=>{handleDelete(task.id)}} className='flex justify-start items-center w-full h-6 pl-4 hover:bg-[#FF6767] transition-all rounded-b-xl cursor-pointer'>Delete</button>
-                </div>
-                )}
-            </div>
-            ))}
+                ))
+            )}
             </div>
         </div>
     {/* main content bottom section end */}
@@ -238,30 +295,38 @@ setTasks(tasks.filter(t => t.id !== id));
          <div className='w-[100%] h-full shadow-2xl py-2 pb-2 px-2 rounded-2xl bord'>
             <div className=' flex justify-start items-center gap-2 w-[98%] h-10 [color:#FF6767] text-xl font-semibold mb-2'><img src={Statusimg}/>Task History</div>
             <div className='flex flex-col justify-start items-center gap-2 w-[100%] h-[660px] py-2 overflow-y-auto overflow-x-hidden'>
-           {tasks.filter(task => task.date < currentDate).sort((a, b) => new Date(b.date) - new Date(a.date)).map(task => (
-                 <div key={task.id} className='relative flex gap-1 border-2 [border-color:#A1A3AB]  h-auto w-[92dvw] md:w-[89dvw] lg:w-[95%] rounded-2xl px-2  py-2'>
-                <div className=' w-[10%] flex items-start justify-center'><img src={getCircleIcon(task.status)}/></div>
-                <div className='flex flex-col w-[90%] flex-grow min-w-0 gap-2'>
-                    <div className=' w-[100%] h-auto text-xl font-semibold text-black break-words'>{task.title}</div>
-                    <div className='w-[100%] h-auto text-[16px] font-semibold text-gray-500 whitespace-pre-wrap break-words line-clamp-3'>{task.desc}</div>
-                    <div className='flex flex-wrap gap-2 w-[100%] h-auto mt-2 justify-start items-center'>
-                        <div className='justify-center items-center h-8 text-[14px] '>Status: <span className={task.status === 'Completed' ? 'text-green-500' : task.status === 'Started' ? 'text-blue-500' :'text-red-400'}>{task.status || 'Not Started'}</span></div>
-                        <div className='justify-center items-center h-8 text-gray-400  text-[14px]'>Created on:{task.date}</div>
+            {tasks.filter(task => task.date < currentDate).length === 0 ? (
+                <div className='text-gray-500 text-xl font-semibold'>No task history</div>
+            ) : (
+                tasks
+                .filter(task => task.date < currentDate)
+                .sort((a, b) => new Date(b.date) - new Date(a.date))
+                .map(task => (
+                    <div key={task.id} className='relative flex gap-1 border-2 [border-color:#A1A3AB] h-auto w-[92dvw] md:w-[89dvw] lg:w-[95%] rounded-2xl px-2 py-2'>
+                    <div className='w-[10%] flex items-start justify-center'><img src={getCircleIcon(task.status)} /></div>
+                    <div className='flex flex-col w-[90%] flex-grow min-w-0 gap-2'>
+                        <div className='w-[100%] h-auto text-xl font-semibold text-black break-words'>{task.title}</div>
+                        <div className='w-[100%] h-auto text-[16px] font-semibold text-gray-500 whitespace-pre-wrap break-words line-clamp-3'>{task.desc}</div>
+                        <div className='flex flex-wrap gap-2 w-[100%] h-auto mt-2 justify-start items-center'>
+                        <div className='justify-center items-center h-8 text-[14px]'>Status: <span className={task.status === 'Completed' ? 'text-green-500' : task.status === 'Started' ? 'text-blue-500' : 'text-red-400'}>{task.status || 'Not Started'}</span></div>
+                        <div className='justify-center items-center h-8 text-gray-400 text-[14px]'>Created on: {task.date}</div>
+                        </div>
                     </div>
-                </div>
-                <button onClick={() => toggleMenu(task.id)} className='w-[10%] flex justify-center items-start cursor-pointer'><img src={edit}/></button>
-                {activeMenuId === task.id && (
-                <div ref={menuRef} className='absolute top-8 right-9 flex flex-col justify-center items-center w-30 h-auto gap-2 border border-gray-300 rounded-xl bg-white shadow-md z-10'>
-                   <button onClick={() => {handleStatusChange(task.id, 'Started'),setActiveMenuId(null);}} className='flex justify-start items-center w-full h-6 pl-4 hover:bg-[#FF6767] transition-all rounded-t-xl cursor-pointer'>Started</button>
-                   <button onClick={()=>{handleStatusChange(task.id, 'Not Started'),setActiveMenuId(null);}} className='flex justify-start items-center w-full h-6 pl-4 hover:bg-[#FF6767] transition-all cursor-pointer text'>Not Started</button>
-                    <button onClick={() => {handleStatusChange(task.id, 'Completed'),setActiveMenuId(null);}} className='flex justify-start items-center w-full h-6 pl-4 hover:bg-[#FF6767] transition-all cursor-pointer'>Completed</button>
-                    <button onClick={()=>{setEditTask(task), AddPop(), handleAddEdit('Edit'),setActiveMenuId(null);}} className='flex justify-start items-center w-full h-6 pl-4 hover:bg-[#FF6767] transition-all cursor-pointer'>Edit</button>
-                    <button onClick={()=>{handleDelete(task.id)}} className='flex justify-start items-center w-full h-6 pl-4 hover:bg-[#FF6767] transition-all rounded-b-xl cursor-pointer'>Delete</button>
-                </div>
-                )}
+                    <button onClick={() => toggleMenu(task.id)} className='w-[10%] flex justify-center items-start cursor-pointer'><img src={edit} /></button>
+                    {activeMenuId === task.id && (
+                        <div ref={menuRef} className='absolute top-8 right-9 flex flex-col justify-center items-center w-30 h-auto gap-2 border border-gray-300 rounded-xl bg-white shadow-md z-10'>
+                        <button onClick={() => {handleStatusChange(task.id, 'Started'); setActiveMenuId(null);}} className='flex justify-start items-center w-full h-6 pl-4 hover:bg-[#FF6767] transition-all rounded-t-xl cursor-pointer'>Started</button>
+                        <button onClick={() => {handleStatusChange(task.id, 'Not Started'); setActiveMenuId(null);}} className='flex justify-start items-center w-full h-6 pl-4 hover:bg-[#FF6767] transition-all cursor-pointer'>Not Started</button>
+                        <button onClick={() => {handleStatusChange(task.id, 'Completed'); setActiveMenuId(null);}} className='flex justify-start items-center w-full h-6 pl-4 hover:bg-[#FF6767] transition-all cursor-pointer'>Completed</button>
+                        <button onClick={() => {setEditTask(task); AddPop(); handleAddEdit('Edit'); setActiveMenuId(null);}} className='flex justify-start items-center w-full h-6 pl-4 hover:bg-[#FF6767] transition-all cursor-pointer'>Edit</button>
+                        <button onClick={() => {handleDelete(task.id)}} className='flex justify-start items-center w-full h-6 pl-4 hover:bg-[#FF6767] transition-all rounded-b-xl cursor-pointer'>Delete</button>
+                        </div>
+                    )}
+                    </div>
+                ))
+            )}
             </div>
-            ))}
-            </div>
+
         </div>
     </div>
     <Create currentDates={currentDate} toggle={CreateOpen} setToggle={setCreateOpen} addTask={addTask} AddEdit={addedittoggle}  editTask={editTask} setEditTask={setEditTask}  updateTask={updateTask} />
