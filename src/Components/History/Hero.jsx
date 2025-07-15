@@ -44,29 +44,21 @@ function Hero({ searchQuery, currentDate, tasks, setTasks }) {
 
 
    const handleStatusChange = async (taskId, newStatus) => {
+  const username = localStorage.getItem("username");
   try {
     const res = await fetch(`http://localhost:3000/tasks/${taskId}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({ status: newStatus })
+      body: JSON.stringify({ username, status: newStatus })
     });
 
     if (res.ok) {
       setTasks(prevTasks =>
         prevTasks.map(task =>
-          task._id.toString() === taskId.toString()
-            ? { ...task, status: newStatus }
-            : task
+          task._id === taskId ? { ...task, status: newStatus } : task
         )
-      );
-
-      // 🔥 Update selected task if it's the one being edited
-      setSelectedTask(prev =>
-        prev && prev._id.toString() === taskId.toString()
-          ? { ...prev, status: newStatus }
-          : prev
       );
     } else {
       console.error("Failed to update status");
@@ -105,8 +97,9 @@ function Hero({ searchQuery, currentDate, tasks, setTasks }) {
    }, []);
 
      const handleDelete = async(id)=>{
+      const username = localStorage.getItem("username");
         setTasks(tasks.filter((task)=>task.id !==id))
-        await fetch(`http://localhost:3000/tasks/${id}`, { method: "DELETE" });
+        await fetch(`http://localhost:3000/tasks/${id}?username=${username}`, { method: "DELETE" });
 setTasks(tasks.filter(t => t.id !== id));
 
     }
@@ -123,8 +116,9 @@ setTasks(tasks.filter(t => t.id !== id));
       };
 
       const clearHistory = async () => {
+        const username = localStorage.getItem("username");
         try {
-          const res = await fetch(`http://localhost:3000/tasks/before/${currentDate}`, {
+          const res = await fetch(`http://localhost:3000/tasks/before/${currentDate}?username=${username}`, {
             method: "DELETE"
           });
           const data = await res.json();

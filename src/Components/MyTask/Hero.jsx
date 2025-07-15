@@ -47,29 +47,21 @@ function Hero({ searchQuery, currentDate, tasks, setTasks }) {
 
 
    const handleStatusChange = async (taskId, newStatus) => {
+  const username = localStorage.getItem("username");
   try {
     const res = await fetch(`http://localhost:3000/tasks/${taskId}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({ status: newStatus })
+      body: JSON.stringify({ username, status: newStatus })
     });
 
     if (res.ok) {
       setTasks(prevTasks =>
         prevTasks.map(task =>
-          task._id.toString() === taskId.toString()
-            ? { ...task, status: newStatus }
-            : task
+          task._id === taskId ? { ...task, status: newStatus } : task
         )
-      );
-
-      // 🔥 Update selected task if it's the one being edited
-      setSelectedTask(prev =>
-        prev && prev._id.toString() === taskId.toString()
-          ? { ...prev, status: newStatus }
-          : prev
       );
     } else {
       console.error("Failed to update status");
@@ -108,8 +100,9 @@ function Hero({ searchQuery, currentDate, tasks, setTasks }) {
 }, []);
 
      const handleDelete = async(id)=>{
+      const username = localStorage.getItem("username");
         setTasks(tasks.filter((task)=>task.id !==id))
-        await fetch(`http://localhost:3000/tasks/${id}`, { method: "DELETE" });
+        await fetch(`http://localhost:3000/tasks/${id}?username=${username}`, { method: "DELETE" });
 setTasks(tasks.filter(t => t.id !== id));
 
     }
@@ -144,11 +137,12 @@ setTasks(tasks.filter(t => t.id !== id));
         
 
                 const clearTasksForCurrentDate = async () => {
+                  const username = localStorage.getItem("username");
                 if (!currentDate) return;
 
                 try {
                   // Call the backend to delete tasks
-                  await fetch(`http://localhost:3000/tasks/date/${currentDate}`, {
+                  await fetch(`http://localhost:3000/tasks/date/${currentDate}?username=${username}`, {
                     method: 'DELETE'
                   });
 
@@ -165,6 +159,19 @@ setTasks(tasks.filter(t => t.id !== id));
               };
 
               const [del, setDel] = useState('hidden')
+
+              const filteredTasks = tasks.filter(task => 
+  task.title.toLowerCase().includes(searchQuery.toLowerCase()) &&
+  task.date === currentDate &&
+  (
+    statusFilter === 'All'
+    ? true
+    : statusFilter === 'Not Started'
+      ? !task.status || task.status === 'Not Started'
+      : task.status === statusFilter
+  )
+);
+
 
       
   return (
@@ -203,19 +210,26 @@ setTasks(tasks.filter(t => t.id !== id));
 
             {/* main content of left section start */}
             <div className='flex flex-col justify-start items-center gap-2 w-[100%] h-full py-2 overflow-y-auto overflow-x-hidden'>
-             {tasks.filter(task => task.title.toLowerCase().includes(searchQuery.toLowerCase()) && task.date === currentDate).length === 0 ? (<button onClick={()=>{AddPop(), handleAddEdit('Add')}} className='text-gray-400 text-xl mt-10 w-[80%] h-[70%] border-2 border-dashed cursor-pointer'>Add some tasks first!</button>) : (tasks.filter(task => task.title.toLowerCase().includes(searchQuery.toLowerCase()) && task.date === currentDate).map(task => (
-                <button  key={task.id} onClick={() => {setSelectedTask(task);if (window.innerWidth < 768) {setShowMobileDetails(true);}}} className='cursor-pointer relative flex gap-1 border-2 [border-color:#A1A3AB]  h-auto w-[92dvw] md:w-[89dvw] lg:w-[95%] rounded-2xl px-2  py-2'>
-                    <div className=' w-[10%] flex items-start justify-center'><img src={getCircleIcon(task.status)}/></div>
-                    <div className='flex flex-col w-[90%] flex-grow min-w-0 gap-2'>
-                        <div className='flex justify-start w-[100%] h-auto text-xl font-semibold text-black break-words'>{task.title}</div>
-                        <div className='flex justify-start w-[100%] h-auto text-[16px] font-semibold text-gray-500 whitespace-pre-wrap break-words line-clamp-3'>{task.desc}</div>
-                        <div className='flex flex-wrap gap-2 w-[100%] h-auto mt-2 justify-start items-center'>
-                            <div className='justify-center items-center h-8'>Status: <span className={task.status === 'Completed' ? 'text-green-500' : task.status === 'Started' ? 'text-blue-500' : 'text-red-400'}>{task.status || 'Not Started'}</span></div>
-                            <div className='justify-center items-center h-8 text-gray-400'>Created on: {task.date}</div>
-                        </div>
-                    </div>
+             {filteredTasks.length === 0 ? (
+                <button onClick={() => { AddPop(); handleAddEdit('Add') }} className='text-gray-400 text-xl mt-10 w-[80%] h-[70%] border-2 border-dashed cursor-pointer'>
+                  Add some tasks first!
                 </button>
-            )))}
+              ) : (
+                filteredTasks.map(task => (
+                  <button key={task.id} onClick={() => { setSelectedTask(task); if (window.innerWidth < 768) { setShowMobileDetails(true); }}} className='cursor-pointer relative flex gap-1 border-2 [border-color:#A1A3AB]  h-auto w-[92dvw] md:w-[89dvw] lg:w-[95%] rounded-2xl px-2  py-2'>
+                    <div className=' w-[10%] flex items-start justify-center'><img src={getCircleIcon(task.status)} /></div>
+                    <div className='flex flex-col w-[90%] flex-grow min-w-0 gap-2'>
+                      <div className='flex justify-start w-[100%] h-auto text-xl font-semibold text-black break-words'>{task.title}</div>
+                      <div className='flex justify-start w-[100%] h-auto text-[16px] font-semibold text-gray-500 whitespace-pre-wrap break-words line-clamp-3'>{task.desc}</div>
+                      <div className='flex flex-wrap gap-2 w-[100%] h-auto mt-2 justify-start items-center'>
+                        <div className='justify-center items-center h-8'>Status: <span className={task.status === 'Completed' ? 'text-green-500' : task.status === 'Started' ? 'text-blue-500' : 'text-red-400'}>{task.status || 'Not Started'}</span></div>
+                        <div className='justify-center items-center h-8 text-gray-400'>Created on: {task.date}</div>
+                      </div>
+                    </div>
+                  </button>
+                ))
+              )}
+
             </div>
             {/* main content of left section end */}
         </div>

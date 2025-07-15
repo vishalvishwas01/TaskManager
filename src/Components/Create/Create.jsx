@@ -35,33 +35,45 @@ function Create({toggle, setToggle, addTask, AddEdit, editTask, setEditTask, upd
 
 
 
-    const handleDone = async() => {
+  const handleDone = async () => {
+  const username = localStorage.getItem("username");
+  if (!username) {
+    alert("User not logged in");
+    return;
+  }
+
   if (editTask) {
     updateTask({ ...editTask, ...form });
     setEditTask(null);
     window.location.reload();
-    await fetch(`http://localhost:3000/tasks/${editTask.id}`, {
-  method: "PUT",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify(form)
-  
-});
 
+    await fetch(`http://localhost:3000/tasks/${editTask.id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ ...form, username })  // attach username
+    });
   } else {
-    const newTask = { ...form, date: form.date || currentDates, id: uuidv4(),status: form.status || 'Not Started', };
+    const newTask = {
+      ...form,
+      date: form.date || currentDates,
+      id: uuidv4(),
+      status: form.status || "Not Started",
+      username, // attach username
+    };
     addTask(newTask);
     window.location.reload();
-    await fetch("http://localhost:3000/tasks", {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify(newTask)
-});
 
+    await fetch("http://localhost:3000/tasks", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(newTask),
+    });
   }
 
-  setForm({ title: '', date: '', desc: '' });
+  setForm({ title: "", date: "", desc: "" });
   ExitPop();
 };
+
 
       
   return (

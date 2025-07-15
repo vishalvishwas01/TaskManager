@@ -1,12 +1,55 @@
-import { NavLink} from 'react-router-dom'
+import { useState, useEffect } from 'react';
+import { NavLink, useNavigate } from 'react-router-dom'
 
 function Menu() {
+
+  const [user, setUser] = useState({ name: '', email: '' });
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const username = localStorage.getItem('username');
+    if (username) {
+      fetch(`http://localhost:3000/user/${username}`)
+        .then(res => res.json())
+        .then(data => {
+          setUser({ name: data.name, email: data.email });
+        })
+        .catch(err => console.error('Failed to fetch user details:', err));
+    }
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.clear();
+    setUser({ name: '', email: '' }); 
+    navigate('/');
+    window.location.reload();
+  };
+
+  const handleSignupRedirect = () => {
+    navigate('/signup');
+    
+  };
+
     const baseClass =
     'group flex gap-3 justify-start items-center w-2xs h-14 rounded-2xl px-4 text-2xl cursor-pointer transition-all';
   const iconBaseClass = 'transition-colors duration-300';
   return (
     <div className=' hidden 2xl:flex flex-col justify-start gap-5 items-center w-full max-w-[300px]  min-w-[180px] [height:calc(100vh-112px)] [background-color:#FF6767] rounded-tr-2xl py-8 transition-all'>
-      <div className=' w-44 h-24 flex flex-col justify-center items-center '><div className='font-semibold text-xl text-white'>Name</div><div  className='font-normal text-white'>Username</div></div>
+      <div className=' w-44 h-24 flex flex-col justify-center items-center '>
+       {user.name && user.email ? (
+          <>
+            <div className='font-semibold text-xl text-white'>{user.name}</div>
+            <div className='font-normal text-white'>{user.email}</div>
+          </>
+        ) : (
+          <button
+            onClick={handleSignupRedirect}
+            className='text-white bg-transparent border border-white rounded-lg px-4 py-2 mt-2 hover:bg-white hover:text-[#FF6767] transition'
+          >
+            Sign In / Sign Up
+          </button>
+        )}
+      </div>
 
 
       <NavLink
@@ -89,6 +132,32 @@ function Menu() {
         </svg>
         Settings
       </NavLink>
+
+
+
+      <button
+        onClick={handleLogout}
+        className='text-white hover:bg-white hover:[color:#FF6767] w-[90%] rounded-2xl text-2xl px-4 py-2 mt-auto flex justify-start items-center gap-5'
+      >
+        <div>
+        <svg
+        width="44px"
+        height="44px"
+        viewBox="0 0 24 24"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        className={`${iconBaseClass} stroke-current`}
+      >
+        <path
+          d="M14 20H6C4.89543 20 4 19.1046 4 18L4 6C4 4.89543 4.89543 4 6 4H14M10 12H21M21 12L18 15M21 12L18 9"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
+      </div>
+        Logout
+      </button>
 
 
     </div>

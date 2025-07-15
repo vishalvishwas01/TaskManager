@@ -17,7 +17,8 @@ function Dashboard() {
 
   useEffect(() => {
   async function loadTasks() {
-    const res = await fetch("http://localhost:3000/tasks");
+    const username = localStorage.getItem('username');
+    const res = await fetch(`http://localhost:3000/tasks?username=${username}`);
     const data = await res.json();
     setTasks(data.map(t => ({ ...t, id: t._id })));
   }
@@ -26,7 +27,7 @@ function Dashboard() {
 
   
   return (
-    <div className="overflow-x-hidden flex flex-col gap-8">
+    <div className="overflow-x-hidden  flex flex-col gap-8">
        <Navbar searchQuery={searchQuery} setSearchQuery={setSearchQuery} currentDate={currentDate} setCurrentDate={setCurrentDate} tasks={tasks} />
       <div className="flex gap-5 justify-center 2xl:justify-start px-2 xl:px-0 sm:px-8">
         <Menu />

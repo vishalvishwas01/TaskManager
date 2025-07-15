@@ -15,14 +15,16 @@ function History() {
     return `${year}-${month}-${day}`;
   });
 
-   useEffect(() => {
+  useEffect(() => {
   async function loadTasks() {
-    const res = await fetch("http://localhost:3000/tasks");
+    const username = localStorage.getItem('username');
+    const res = await fetch(`http://localhost:3000/tasks?username=${username}`);
     const data = await res.json();
     setTasks(data.map(t => ({ ...t, id: t._id })));
   }
   loadTasks();
 }, []);
+
 
   
   return (

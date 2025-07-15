@@ -51,26 +51,23 @@ function Hero({ searchQuery, currentDate, tasks, setTasks }) {
     );
 
 
-    const handleStatusChange = async (taskId, newStatus) => {
+   const handleStatusChange = async (taskId, newStatus) => {
+  const username = localStorage.getItem("username");
   try {
     const res = await fetch(`http://localhost:3000/tasks/${taskId}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({ status: newStatus })
+      body: JSON.stringify({ username, status: newStatus })
     });
 
     if (res.ok) {
-      // update task in local state if needed
-     setTasks(prevTasks =>
-  prevTasks.map(task =>
-    (task._id?.toString() === taskId.toString() || task.id?.toString() === taskId.toString())
-      ? { ...task, status: newStatus }
-      : task
-  )
-);
-
+      setTasks(prevTasks =>
+        prevTasks.map(task =>
+          task._id === taskId ? { ...task, status: newStatus } : task
+        )
+      );
     } else {
       console.error("Failed to update status");
     }
@@ -78,6 +75,8 @@ function Hero({ searchQuery, currentDate, tasks, setTasks }) {
     console.error("Error:", error);
   }
 };
+
+
 
 
     const [CreateOpen, setCreateOpen]= useState('hidden')
@@ -108,12 +107,19 @@ function Hero({ searchQuery, currentDate, tasks, setTasks }) {
       }, []);
    
 
-    const handleDelete = async(id)=>{
-        setTasks(tasks.filter((task)=>task.id !==id))
-        await fetch(`http://localhost:3000/tasks/${id}`, { method: "DELETE" });
-setTasks(tasks.filter(t => t.id !== id));
+   const handleDelete = async (id) => {
+  const username = localStorage.getItem("username");
+  try {
+    await fetch(`http://localhost:3000/tasks/${id}?username=${username}`, {
+      method: "DELETE",
+    });
+    setTasks(tasks.filter(task => task._id !== id));
+  } catch (err) {
+    console.error("Failed to delete task", err);
+  }
+};
 
-    }
+
 
     const [editTask, setEditTask] = useState(null);
     const updateTask = (updatedTask) => {
@@ -149,21 +155,22 @@ setTasks(tasks.filter(t => t.id !== id));
         };
 
         const handleClearCompleted = async () => {
-            try {
-                const res = await fetch(`http://localhost:3000/tasks/clear/completed/${currentDate}`, {
-                method: "DELETE",
-                });
+  const username = localStorage.getItem("username");
+  try {
+    const res = await fetch(`http://localhost:3000/tasks/clear/completed/${currentDate}?username=${username}`, {
+      method: "DELETE",
+    });
 
-                if (res.ok) {
-                const deletedIds = await res.json();
-                setTasks(prev => prev.filter(task => !(task.status === "Completed" && task.date === currentDate)));
-                } else {
-                console.error("Failed to delete completed tasks.");
-                }
-            } catch (err) {
-                console.error("Error clearing completed tasks:", err);
-            }
-            };
+    if (res.ok) {
+      setTasks(prev => prev.filter(task => !(task.status === "Completed" && task.date === currentDate)));
+    } else {
+      console.error("Failed to delete completed tasks.");
+    }
+  } catch (err) {
+    console.error("Error clearing completed tasks:", err);
+  }
+};
+
 
             const TaskHistory = tasks
   .filter(task => task.date < currentDate)
@@ -175,7 +182,7 @@ setTasks(tasks.filter(t => t.id !== id));
 
       
   return (
-    <div className=' flex flex-wrap 2xl:flex-nowrap gap-10 justify-center items-center w-8xl h-auto  rounded-2xl  px-1 py-4 2xl:mr-4 my-0 mb-4 '>
+    <div className=' flex flex-wrap 2xl:flex-nowrap gap-10 justify-center items-center w-8xl h-auto  rounded-2xl  px-1 py-4 2xl:mr-4 my-0'>
         <div className='flex flex-col gap-2 justify-start items-center w-[100%] lg:w-115 2xl:w-[25dvw] h-190 rounded-2xl py-2 shadow-2xl '>
             {/* top header of left section start */}
             <div className='flex flex-col gap-2 w-[95%] h-20 '>
