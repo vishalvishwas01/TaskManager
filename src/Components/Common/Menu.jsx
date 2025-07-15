@@ -44,7 +44,7 @@ function Menu() {
         ) : (
           <button
             onClick={handleSignupRedirect}
-            className='text-white bg-transparent border border-white rounded-lg px-4 py-2 mt-2 hover:bg-white hover:text-[#FF6767] transition'
+            className='text-white bg-transparent border border-white rounded-lg px-4 py-2 mt-2 hover:bg-white hover:text-[#FF6767] transition cursor-pointer'
           >
             Sign In / Sign Up
           </button>
@@ -133,11 +133,33 @@ function Menu() {
         Settings
       </NavLink>
 
+      <NavLink
+        to="/contact"
+        className={({ isActive }) =>
+          `${baseClass} mb-0 ${isActive ? 'bg-white text-[#FF6767]' : 'text-white hover:bg-white hover:[color:#FF6767]'} text-auto w-[90%]`
+        }
+      >
+        <svg
+          width="44px"
+          height="44px"
+          viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          className={`${iconBaseClass} stroke-current`}
+        >
+          <path d="M18,16 C20.20915,16 22,14.20915 22,12 C22,9.79085 20.20915,8 18,8" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+          <path d="M6,8 C3.79086,8 2,9.79085 2,12 C2,14.20915 3.79086,16 6,16" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+          <path d="M6,16 L6,15.75 L6,14.5 L6,12 L6,8 C6,4.68629 8.6863,2 12,2 C15.3137,2 18,4.68629 18,8 L18,16 C18,19.3137 15.3137,22 12,22" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+        Contact
+      </NavLink>
+
+
 
 
       <button
         onClick={handleLogout}
-        className='text-white hover:bg-white hover:[color:#FF6767] w-[90%] rounded-2xl text-2xl px-4 py-2 mt-auto flex justify-start items-center gap-5'
+        className='text-white hover:bg-white hover:[color:#FF6767] w-[90%] rounded-2xl text-2xl px-4 py-2 mt-auto flex justify-start items-center gap-5 cursor-pointer'
       >
         <div>
         <svg

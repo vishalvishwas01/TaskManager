@@ -14,6 +14,8 @@ function Hero() {
   email: ''
 });
 
+const [passwordLengthErr, setPasswordLengthErr] = useState(false);
+
 
 
 const currentUsername = localStorage.getItem('username');
@@ -54,6 +56,7 @@ const currentUsername = localStorage.getItem('username');
   try {
     // Check username existence
     const usernameCheck = await fetch(`http://localhost:3000/checkUserExists?username=${userInfo.username}&currentUsername=${currentUsername}`);
+
     const usernameData = await usernameCheck.json();
 
     // Check email existence
@@ -220,6 +223,7 @@ const handlefogtoggle = ()=>{
           <input
             type='password'
             value={oldPassword}
+            autoComplete="off"
             onChange={(e) => setOldPassword(e.target.value)}
             className='border-1 border-gray-500 w-full rounded-xl px-2 py-2 text-xl text-gray-500 hover:text-black'
           />
@@ -229,9 +233,15 @@ const handlefogtoggle = ()=>{
           <input
             type='password'
             value={newPassword}
-            onChange={(e) => setNewPassword(e.target.value)}
+            onChange={(e) => {
+              const value = e.target.value;
+              setNewPassword(value);
+              setPasswordLengthErr(value.length > 0 && value.length <= 6);
+            }}
             className='border-1 border-gray-500 w-full rounded-xl px-2 py-2 text-xl text-gray-500 hover:text-black'
           />
+          {passwordLengthErr && <span className="text-red-500">Password must be more than 6 characters</span>}
+
 
           <div className='w-full justify-start items-center px-2'>Confirm New Password</div>
           <input
@@ -244,7 +254,7 @@ const handlefogtoggle = ()=>{
         </div>
 
         <div className='w-full flex justify-start items-center gap-5 px-4'>
-          <button onClick={handlePasswordChange} className='[background-color:#FF6767] hover:bg-red-600 cursor-pointer py-2 px-3 rounded-2xl text-white'>Save Password</button>
+          <button onClick={handlePasswordChange} disabled={passwordLengthErr} className={`[background-color:#FF6767] hover:bg-red-600 cursor-pointer py-2 px-3 rounded-2xl text-white ${passwordLengthErr ? 'opacity-50 cursor-not-allowed' : ''}`}>Save Password</button>
           <button onClickCapture={handlefogtoggle} className='[background-color:#AB6767] hover:bg-red-600 cursor-pointer py-2 px-3 rounded-2xl text-white'>Forgot password ?</button>
         </div>
       </div>

@@ -67,14 +67,22 @@ app.put('/updateUser', async (req, res) => {
 app.get('/checkUserExists', async (req, res) => {
   const { username, email, currentUsername } = req.query;
   const db = client.db(dbName);
+  const collection = db.collection('userinfo');
 
   let query = {};
-  if (username) query = { username, username: { $ne: currentUsername } };
-  if (email) query = { email, username: { $ne: currentUsername } };
+  if (username) query.username = username;
+  if (email) query.email = email;
 
-  const exists = await db.collection('userinfo').findOne(query);
-  res.json({ exists: !!exists });
+  const user = await collection.findOne(query);
+
+  // If found but it's the same user, treat as not existing
+  if (user && user.username === currentUsername) {
+    return res.json({ exists: false });
+  }
+
+  res.json({ exists: !!user });
 });
+
 
 app.post('/verifyPassword', async (req, res) => {
   const { username, oldPassword } = req.body;
@@ -349,6 +357,32 @@ app.put('/resetPassword', async (req, res) => {
 });
 
 
+app.post('/contact', async (req, res) => {
+  const { name, email, message } = req.body;
+
+  const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: process.env.EMAIL_ID,
+      pass: process.env.EMAIL_PASS
+    }
+  });
+
+  const mailOptions = {
+    from: email,   // user's email
+    to: 'vishalvishwas7082@gmail.com',  // your email
+    subject: `New Contact Form Message from ${name}`,
+    text: `Name: ${name}\nEmail: ${email}\nMessage: ${message}`
+  };
+
+  try {
+    await transporter.sendMail(mailOptions);
+    res.json({ success: true, message: 'Message sent successfully' });
+  } catch (error) {
+    console.error('Error sending contact form email:', error);
+    res.status(500).json({ success: false, message: 'Failed to send message' });
+  }
+});
 
 
 

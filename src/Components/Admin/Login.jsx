@@ -6,20 +6,9 @@ import signbanner from "../../assets/signbanner.png";
 
 function Login() {
   const [searchList, setSearchList] = useState([]);
-  const [loginData, setLoginData] = useState({ identifier: "", password: "" });
+  const [loginData, setLoginData] = useState({ username: "", password: "" });
   const [message, setMessage] = useState("");
   const navigate = useNavigate();
-
-   const [userInfo, setUserInfo] = useState({
-      name: '',
-      username: '',
-      email: ''
-    });
-  
-    const [errors, setErrors] = useState({
-    username: '',
-    email: ''
-  });
 
   useEffect(() => {
     getData();
@@ -35,11 +24,12 @@ function Login() {
     setLoginData({ ...loginData, [e.target.name]: e.target.value });
   };
 
-  const handleLogin = () => {
+  const handleLogin = (e) => {
+    e.preventDefault(); // Prevent page refresh
     const user = searchList.find(
       (user) =>
-        (user.username === loginData.identifier ||
-          user.email === loginData.identifier) &&
+        (user.username === loginData.username ||
+          user.email === loginData.username) &&
         user.password === loginData.password
     );
 
@@ -54,12 +44,10 @@ function Login() {
     }
   };
 
-  const [fog, setFog]=useState('hidden')
-  
-  const handlefogtoggle = ()=>{
-    setFog('flex')
-  }
-  
+  const [fog, setFog] = useState("hidden");
+  const handlefogtoggle = () => {
+    setFog("flex");
+  };
 
   return (
     <div className="relative w-screen h-screen">
@@ -73,37 +61,43 @@ function Login() {
           <div className="w-[100%] h-[90%] hidden md:flex justify-center items-center">
             <img src={signbanner} alt="Sign Banner" />
           </div>
+
           <div className="w-[100%] h-[90%] flex flex-col justify-start items-start gap-5">
             <div className="text-2xl font-bold text-black">Log In</div>
-            <div className="w-full">
+
+            <form onSubmit={handleLogin} className="w-full flex flex-col gap-4">
               <input
                 onChange={handleInputChange}
-                value={loginData.identifier}
+                value={loginData.username}
                 type="text"
-                name="identifier"
+                name="username"
+                autoComplete="username"
                 className="border-2 border-gray-400 w-[100%] sm:w-[90%] py-2 rounded-xl px-2"
                 placeholder="Enter your username or email"
               />
-            </div>
-            <div className="w-full">
+
               <input
                 onChange={handleInputChange}
                 value={loginData.password}
                 type="password"
                 name="password"
+                autoComplete="current-password"
                 className="border-2 border-gray-400 w-[100%] sm:w-[90%] py-2 rounded-xl px-2"
                 placeholder="Enter your password"
               />
-            </div>
-            <button
-              onClick={handleLogin}
-              className="bg-[#FF6767] hover:bg-red-600 cursor-pointer text-white p-3 rounded-2xl"
-            >
-              Log In
-            </button>
+
+              <button
+                type="submit"
+                className="bg-[#FF6767] hover:bg-red-600 cursor-pointer text-white p-3 rounded-2xl w-30"
+              >
+                Log In
+              </button>
+            </form>
+
             {message && (
               <div className="text-green-600 font-semibold">{message}</div>
             )}
+
             <NavLink
               to="/signup"
               className="flex justify-center items-center gap-2"
@@ -119,10 +113,9 @@ function Login() {
               className="flex justify-center items-center gap-2"
             >
               <span className="text-red-400 hover:text-red-600 cursor-pointer">
-                Forgot Password ?
+                Forgot Password?
               </span>
             </button>
-
 
             <div className="flex justify-center items-center gap-2">
               Or, Login with <button>facebook</button>
@@ -132,7 +125,8 @@ function Login() {
             </div>
           </div>
         </div>
-            <ForgotPassword fogtoggle={fog} setFogtoggle={setFog}  emailunchange={userInfo.email}  />
+
+        <ForgotPassword fogtoggle={fog} setFogtoggle={setFog} />
       </div>
     </div>
   );

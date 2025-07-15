@@ -1,20 +1,18 @@
 import React, { useState, useEffect } from 'react';
 
 function ForgotPassword({ fogtoggle, emailunchange, setFogtoggle }) {
+  const [email, setEmail] = useState(emailunchange || '');
   const [otpSent, setOtpSent] = useState(false);
   const [otpCooldown, setOtpCooldown] = useState(0);
   const [otp, setOtp] = useState('');
   const [otpVerified, setOtpVerified] = useState(false);
   const [message, setMessage] = useState('');
-  
+
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [passwordError, setPasswordError] = useState('');
 
-
-const [verified, setVerified] = useState(false);
-
-
+  const isLoggedIn = !!emailunchange;  // true if coming from logged in context
 
   useEffect(() => {
     let timer;
@@ -26,37 +24,70 @@ const [verified, setVerified] = useState(false);
     return () => clearInterval(timer);
   }, [otpCooldown]);
 
-  const sendOtp = async () => {
-    const res = await fetch('http://localhost:3000/sendOtp', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email: emailunchange })
-    });
+  useEffect(() => {
+    if (fogtoggle === 'flex') {
+      resetForgotPasswordState();
+    }
+  }, [fogtoggle]);
 
-    const data = await res.json();
-    if (data.success) {
-      setOtpSent(true);
-      setMessage('OTP sent successfully');
-      setOtpCooldown(120); // 2 minutes
-    } else {
-      setMessage('Failed to send OTP');
+  // Reset states when email changes (if not logged in)
+  useEffect(() => {
+    if (!isLoggedIn) {
+      resetForgotPasswordState();
+    }
+  }, [email]);
+
+  const sendOtp = async () => {
+    try {
+      // Check if email exists
+      const checkRes = await fetch(`http://localhost:3000/checkUserExists?email=${email}`);
+      const checkData = await checkRes.json();
+
+      if (!checkData.exists) {
+        setMessage('Email does not exist');
+        return;
+      }
+
+      // Send OTP
+      const res = await fetch('http://localhost:3000/sendOtp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
+      });
+
+      const data = await res.json();
+      if (data.success) {
+        setOtpSent(true);
+        setMessage('OTP sent successfully');
+        setOtpCooldown(120);
+      } else {
+        setMessage('Failed to send OTP');
+      }
+    } catch (err) {
+      console.error('Error sending OTP:', err);
+      setMessage('Error sending OTP');
     }
   };
 
   const verifyOtp = async () => {
-    const res = await fetch('http://localhost:3000/verifyOtp', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email: emailunchange, otp })
-    });
+    try {
+      const res = await fetch('http://localhost:3000/verifyOtp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, otp })
+      });
 
-    const data = await res.json();
-    if (data.success) {
-      setOtpVerified(true);
-      setMessage('OTP verified successfully');
-    } else {
-      setMessage('Incorrect OTP');
-      setOtpVerified(false);
+      const data = await res.json();
+      if (data.success) {
+        setOtpVerified(true);
+        setMessage('OTP verified successfully');
+      } else {
+        setMessage('Incorrect OTP');
+        setOtpVerified(false);
+      }
+    } catch (err) {
+      console.error('Error verifying OTP:', err);
+      setMessage('Error verifying OTP');
     }
   };
 
@@ -66,52 +97,59 @@ const [verified, setVerified] = useState(false);
       return;
     }
 
-    const res = await fetch('http://localhost:3000/resetPassword', {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email: emailunchange, newPassword })
-    });
+    try {
+      const res = await fetch('http://localhost:3000/resetPassword', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, newPassword })
+      });
 
-    const data = await res.json();
-    if (data.success) {
-      alert('Password reset successfully');
-      setFogtoggle('hidden');
-      resetForgotPasswordState();
-    } else {
-      alert('Failed to reset password');
+      const data = await res.json();
+      if (data.success) {
+        alert('Password reset successfully');
+        setFogtoggle('hidden');
+        resetForgotPasswordState();
+      } else {
+        alert('Failed to reset password');
+      }
+    } catch (err) {
+      console.error('Error resetting password:', err);
+      alert('Error resetting password');
     }
   };
 
   const resetForgotPasswordState = () => {
-  setOtpSent(false);
-  setOtp('');
-  setVerified(false);
-  setNewPassword('');
-  setConfirmPassword('');
-  setMessage('');
-};
-useEffect(() => {
-  if (fogtoggle === 'flex') {
-    resetForgotPasswordState();
-  }
-}, [fogtoggle]);
-
-
+    setOtpSent(false);
+    setOtp('');
+    setOtpVerified(false);
+    setNewPassword('');
+    setConfirmPassword('');
+    setMessage('');
+    setPasswordError('');
+    setOtpCooldown(0);
+  };
 
   return (
     <div className={`${fogtoggle} absolute bg-black/70 border-2 w-screen h-screen justify-center items-center`}>
       <div className='border-2 bg-white rounded-2xl opacity-100 z-50 w-[50%] flex flex-col justify-start items-center p-4 gap-4'>
         <div className='w-full text-xl font-semibold flex justify-between'>
-          Forgot Password ? 
-          <button className='cursor-pointer' onClick={() => {setFogtoggle('hidden'),resetForgotPasswordState()}}>Cancel</button>
+          Forgot Password? 
+          <button
+            className='cursor-pointer'
+            onClick={() => { setFogtoggle('hidden'); resetForgotPasswordState(); }}
+          >
+            Cancel
+          </button>
         </div>
 
         <div className='w-full flex justify-start items-center gap-5'>
           <input
             name='email'
-            value={emailunchange}
+            value={email || emailunchange}
+            onChange={!isLoggedIn ? (e) => setEmail(e.target.value) : undefined}
+            readOnly={isLoggedIn}
             type='text'
-            readOnly
+            placeholder='Enter your email'
             className='py-2 px-2 text-xl text-gray-500 border-2 rounded-2xl w-[70%]'
           />
           <button
@@ -122,7 +160,12 @@ useEffect(() => {
             {otpCooldown > 0 ? `Send Again in ${otpCooldown}s` : 'Send OTP'}
           </button>
         </div>
-        {message && <div className={`w-full text-left ${message.includes('success') ? 'text-green-500' : 'text-red-500'}`}>{message}</div>}
+
+        {message && (
+          <div className={`w-full text-left ${message.includes('success') ? 'text-green-500' : 'text-red-500'}`}>
+            {message}
+          </div>
+        )}
 
         <div className='w-full flex justify-start items-center gap-5'>
           <input

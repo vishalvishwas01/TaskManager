@@ -1,130 +1,203 @@
-import React, { useEffect, useState } from 'react'
-import {v4 as uuidv4} from 'uuid'
-import { NavLink} from 'react-router-dom'
-import background from '../../assets/background.png'
-import signbanner from '../../assets/signbanner.png'
-
+import React, { useEffect, useState } from 'react';
+import { v4 as uuidv4 } from 'uuid';
+import { Navigate, NavLink , useNavigate} from 'react-router-dom';
+import background from '../../assets/background.png';
+import signbanner from '../../assets/signbanner.png';
 
 function Signup() {
-const [info, setInfo] = useState({name:'',username:'',email:'',password:'', confirmPassword:''})
-const [list, setList]=useState([])
-const [searchlist, setSearchList]=useState([])
-const [passerr, setPassError]=useState(false)
-const [usererr, setUserError]=useState(false)
-const [emailerr, setEmailError]=useState(false)
+  const [info, setInfo] = useState({ name: '', username: '', email: '', password: '', confirmPassword: '' });
+  const [list, setList] = useState([]);
+  const [searchlist, setSearchList] = useState([]);
+  const [passerr, setPassError] = useState(false);
+  const [usererr, setUserError] = useState(false);
+  const [emailerr, setEmailError] = useState(false);
+  const [nameerr, setNameError] = useState(false);
+
+  const [passLengthErr, setPassLengthErr] = useState(false);
+    const navigate = useNavigate();
+
 const handleChange = (e) => {
-  const { name, value } = e.target
-  const updatedInfo = { ...info, [name]: value }
-  setInfo(updatedInfo)
+  const { name, value } = e.target;
+  const updatedInfo = { ...info, [name]: value };
+  setInfo(updatedInfo);
+
+  if (name === 'name') {
+    setNameError(value.trim() === '');
+  }
 
   if (name === 'username') {
-    const isUserExist = searchlist.some(user => user.username === value)
-    setUserError(isUserExist)
+    const isUserExist = searchlist.some(user => user.username === value);
+    setUserError(isUserExist);
   }
 
-  if (name === 'password' || name === 'confirmPassword') {
-    setPassError(updatedInfo.password !== updatedInfo.confirmPassword)
+  if (name === 'password') {
+    setPassError(updatedInfo.password !== updatedInfo.confirmPassword);
+    setPassLengthErr(value.length <= 6);
   }
 
-   if (name === 'email') {
-    const isEmailExist = searchlist.some(user => user.email === value)
-    setEmailError(isEmailExist)
-  }
-}
-
-
-
-const getData = async()=>{
-  const res = await fetch(`http://localhost:3000/get`);
-  const data = await res.json();
-  setSearchList(data)
-}
-
-const UserSearch = ()=>{
-  if(searchlist.username === info.username){
-    setUserError(true)
-  } else{
-    setUserError(false)
-  }
-}
-const EmailSearch = ()=>{
-  if(searchlist.email === info.email){
-    setEmailError(true)
-  } else{
-    setEmailError(false)
-  }
-}
-useEffect(()=>{
-  getData()
-  UserSearch()
-  EmailSearch()
-},[])
-
-const handleRegister = async () => {
-  const isUserExist = searchlist.some(user => user.username === info.username)
-  const isEmailExist = searchlist.some(user => user.email === info.email)
-  if (isUserExist) {
-    setUserError(true)
-    return
-  } else {
-    setUserError(false)
+  if (name === 'confirmPassword') {
+    setPassError(updatedInfo.password !== updatedInfo.confirmPassword);
   }
 
-   if (isEmailExist) {
-    setEmailError(true)
-    return
-  } else {
-    setEmailError(false)
+  if (name === 'email') {
+    const isEmailExist = searchlist.some(user => user.email === value);
+    setEmailError(isEmailExist);
   }
+};
 
-  if (info.password !== info.confirmPassword) {
-    setPassError(true)
-    return
-  } else {
-    setPassError(false)
-  }
 
-  const newUser = { ...info, id: uuidv4() }
-  setList([...list, newUser])
-  console.log(newUser)
-  
-  await fetch('http://localhost:3000/Signup', {
-    method: 'POST',
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(newUser)
-  })
+  const getData = async () => {
+    const res = await fetch(`http://localhost:3000/get`);
+    const data = await res.json();
+    setSearchList(data);
+  };
 
-  setInfo({ name: '', username: '', email: '', password: '', confirmPassword: '' })
-  getData()
-}
+  useEffect(() => {
+    getData();
+  }, []);
+
+  const handleRegister = async () => {
+    if (info.name.trim() === '') {
+      setNameError(true);
+      return;
+    } else {
+      setNameError(false);
+    }
+
+    const isUserExist = searchlist.some(user => user.username === info.username);
+    const isEmailExist = searchlist.some(user => user.email === info.email);
+    if (isUserExist) {
+      setUserError(true);
+      return;
+    }
+
+    if (isEmailExist) {
+      setEmailError(true);
+      return;
+    }
+
+    if (info.password !== info.confirmPassword) {
+      setPassError(true);
+      return;
+    }
+
+    const newUser = { ...info, id: uuidv4() };
+    setList([...list, newUser]);
+    console.log(newUser);
+
+    await fetch('http://localhost:3000/Signup', {
+      method: 'POST',
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(newUser)
+    });
+
+    setInfo({ name: '', username: '', email: '', password: '', confirmPassword: '' });
+    getData();
+    navigate('/login');
+  };
+
+  const isRegisterDisabled = usererr || emailerr || passerr || nameerr || passLengthErr || Object.values(info).some(val => val.trim() === '');
 
 
   return (
     <div className='relative w-screen h-screen'>
-      <img className='relative  w-full h-full object-cover' src={background} alt="Background"/>
+      <img className='relative w-full h-full object-cover' src={background} alt="Background" />
       <div className='absolute inset-0 bg-[#FF6767]/90 flex justify-center items-center z-10'>
-      <div className=' bg-white w-6xl h-[700px] rounded-2xl flex justify-center items-center px-4 sm:px-8 mx-2 gap-1'>
-        <div className='w-[100%] h-[90%] hidden md:flex justify-center items-center'><img src={signbanner}/></div>
-        <div className='w-[100%] h-[90%] flex flex-col justify-start items-start gap-5'>
-          <div className='text-2xl font-bold text-black'>Sign Up</div>
-          <div className='w-full'><input onChange={handleChange} value={info.name} type='text' id='name' name='name' className='border-2 border-gray-400 w-[100%] sm:w-[90%] py-2 rounded-xl px-2' placeholder='Enter your name' /></div>
-          <div className='w-full'><input onChange={handleChange} value={info.username} type='text' id='username' name='username' className='border-2 border-gray-400 w-[100%] sm:w-[90%] py-2 rounded-xl px-2' placeholder='Enter your username' /></div>
-          {usererr === true && <div className='text-red-500'>Username already exist</div>}
-          <div className='w-full'><input onChange={handleChange} value={info.email} type='text' id='email' name='email' className='border-2 border-gray-400 w-[100%] sm:w-[90%] py-2 rounded-xl px-2' placeholder='Enter your email' /></div>
-          {emailerr === true && <div className='text-red-500'>Email already exist</div>}
-          <div className='w-full'><input onChange={handleChange} value={info.password} type='text' id='password' name='password' className='border-2 border-gray-400 w-[100%] sm:w-[90%] py-2 rounded-xl px-2' placeholder='Enter your password' /></div>
-          <div className='w-full'><input onChange={handleChange} value={info.confirmPassword} type='text' id='confirmPassword' name='confirmPassword' className='border-2 border-gray-400 w-[100%] sm:w-[90%] py-2 rounded-xl px-2' placeholder='confirm your password' /></div>
-          {passerr === true && <div className='text-red-500'>password did not match</div>}
-          <button onClick={handleRegister} disabled={usererr || emailerr || passerr} className={`bg-[#FF6767] hover:bg-red-600 cursor-pointer text-white p-3 rounded-2xl ${ usererr || emailerr || passerr ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}>Register</button>
-          <NavLink to="/login" className='flex justify-center items-center gap-2'>Already have an account?<button className='text-blue-400 hover:text-blue-600 cursor-pointer'>Sign In</button></NavLink>
-          <div className='flex justify-center items-center gap-2'>Or, Login with <button>facebook</button><button>google</button><button>github</button><button>twitter</button></div>
+        <div className='bg-white w-6xl h-[700px] rounded-2xl flex justify-center items-center px-4 sm:px-8 mx-2 gap-1'>
+          <div className='w-[100%] h-[90%] hidden md:flex justify-center items-center'><img src={signbanner} alt='Sign banner' /></div>
+          <div className='w-[100%] h-[90%] flex flex-col justify-start items-start gap-5'>
+            <div className='text-2xl font-bold text-black'>Sign Up</div>
+
+            <div className='w-full'>
+              <input
+                onChange={handleChange}
+                value={info.name}
+                type='text'
+                id='name'
+                name='name'
+                className='border-2 border-gray-400 w-[100%] sm:w-[90%] py-2 rounded-xl px-2'
+                placeholder='Enter your name'
+              />
+              {nameerr && <div className='text-red-500'>Name is required</div>}
+            </div>
+
+            <div className='w-full'>
+              <input
+                onChange={handleChange}
+                value={info.username}
+                type='text'
+                id='username'
+                name='username'
+                className='border-2 border-gray-400 w-[100%] sm:w-[90%] py-2 rounded-xl px-2'
+                placeholder='Enter your username'
+              />
+              {usererr && <div className='text-red-500'>Username already exists</div>}
+            </div>
+
+            <div className='w-full'>
+              <input
+                onChange={handleChange}
+                value={info.email}
+                type='text'
+                id='email'
+                name='email'
+                className='border-2 border-gray-400 w-[100%] sm:w-[90%] py-2 rounded-xl px-2'
+                placeholder='Enter your email'
+              />
+              {emailerr && <div className='text-red-500'>Email already exists</div>}
+            </div>
+
+            <div className='w-full'>
+              <input
+                onChange={handleChange}
+                value={info.password}
+                type='password'
+                id='password'
+                name='password'
+                className='border-2 border-gray-400 w-[100%] sm:w-[90%] py-2 rounded-xl px-2'
+                placeholder='Enter your password'
+              />
+              {passLengthErr && <div className='text-red-500'>Password must be more than 6 characters</div>}
+            </div>
+
+            <div className='w-full'>
+              <input
+                onChange={handleChange}
+                value={info.confirmPassword}
+                type='password'
+                id='confirmPassword'
+                name='confirmPassword'
+                className='border-2 border-gray-400 w-[100%] sm:w-[90%] py-2 rounded-xl px-2'
+                placeholder='Confirm your password'
+              />
+              {passerr && <div className='text-red-500'>Password did not match</div>}
+            </div>
+
+            <button
+              onClick={handleRegister}
+              disabled={isRegisterDisabled}
+              className={`bg-[#FF6767] hover:bg-red-600 text-white p-3 rounded-2xl ${isRegisterDisabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
+            >
+              Register
+            </button>
+
+            <NavLink to="/login" className='flex justify-center items-center gap-2'>
+              Already have an account?
+              <button className='text-blue-400 hover:text-blue-600 cursor-pointer'>Sign In</button>
+            </NavLink>
+
+            <div className='flex justify-center items-center gap-2'>Or, Login with 
+              <button>facebook</button>
+              <button>google</button>
+              <button>github</button>
+              <button>twitter</button>
+            </div>
+
+          </div>
         </div>
       </div>
-      </div>
-      
     </div>
-
-  )
+  );
 }
 
-export default Signup
+export default Signup;

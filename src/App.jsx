@@ -5,6 +5,7 @@ import History from "./Components/History/History";
 import Settings from "./Components/Settings/Settings";
 import Signup from "./Components/Admin/Signup";
 import Login from "./Components/Admin/Login";
+import Contact from "./Components/Contact/Contact";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
           <Route path="/settings" element={<Settings/>}></Route>
           <Route path="/signup" element={<Signup/>}></Route>
           <Route path="/login" element={<Login/>}></Route>
+          <Route path="/contact" element={<Contact/>}></Route>
         </Routes>
       </BrowserRouter>
     </>
