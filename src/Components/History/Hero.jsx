@@ -153,6 +153,16 @@ setTasks(tasks.filter(t => t.id !== id));
           if (status === 'Started') return blue;
           return Red;
           };
+
+          useEffect(() => {
+  if (selectedTask) {
+    const updatedSelectedTask = tasks.find(task => task.id === selectedTask.id);
+    if (updatedSelectedTask) {
+      setSelectedTask(updatedSelectedTask);
+    }
+  }
+}, [tasks, selectedTask?.id]);
+
                 
 
 
