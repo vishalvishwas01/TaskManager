@@ -17,7 +17,6 @@ const port = 3000;
 
 app.use(cors());
 app.use(bodyparser.json());
-const axios = require('axios');
 
 // admin
 app.get('/get', async(req, res)=>{
