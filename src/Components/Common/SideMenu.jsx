@@ -1,9 +1,37 @@
 
-import { NavLink} from 'react-router-dom'
+import { NavLink, useNavigate} from 'react-router-dom'
 import cross from '../../assets/cross.svg'
+import { useState, useEffect } from 'react';
 
 function SideMenu({showMenu, setShowMenu}) {
     const handleNavigate = () => setShowMenu(false);
+
+    const [user, setUser] = useState({ name: '', email: '' });
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const username = localStorage.getItem('username');
+    if (username) {
+      fetch(`http://localhost:3000/user/${username}`)
+        .then(res => res.json())
+        .then(data => {
+          setUser({ name: data.name, email: data.email });
+        })
+        .catch(err => console.error('Failed to fetch user details:', err));
+    }
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.clear();
+    setUser({ name: '', email: '' }); 
+    navigate('/');
+    window.location.reload();
+  };
+
+  const handleSignupRedirect = () => {
+    navigate('/signup');
+    
+  };
 
 
 
@@ -15,12 +43,24 @@ function SideMenu({showMenu, setShowMenu}) {
      <div className={`fixed inset-0 z-20 ${showMenu ? 'pointer-events-auto' : 'pointer-events-none'}`} >
       {/* Backdrop */}
        <div className={` absolute inset-0 bg-black transition-opacity duration-300 ease-in-out ${showMenu ? 'opacity-50 pointer-events-auto' : 'opacity-0 pointer-events-none'}`} onClick={() => setShowMenu(false)}/><div className={`flex flex-col justify-start items-center pt-8 gap-5 absolute top-0 left-0 w-[300px] h-screen bg-[#FF6767] z-60 transform transition-transform duration-300 ease-in-out ${showMenu ? 'translate-x-0' : '-translate-x-full'}`}>
-        <div className='flex w-[90%] justify-between'>
-            <div className=' text-white font-semibold text-2xl md:text-3xl '>Task<span className='text-black ml-2'>Manager</span></div>
-            <button  onClick={() => setShowMenu(false)} className='cursor-pointer'><img src={cross}/></button>
+        <div className=' w-64 h-24 flex justify-between items-center'>
+          <div className='flex flex-col  w-50'>
+       {user.name && user.email ? (
+          <>
+            <div className='font-semibold text-xl text-white'>{user.name}</div>
+            <div className='font-normal text-white  break-words'>{user.email}</div>
+          </>
+        ) : (
+          <button
+            onClick={handleSignupRedirect}
+            className='text-white bg-transparent border border-white rounded-lg px-4 py-2 mt-2 hover:bg-white hover:text-[#FF6767] transition cursor-pointer'
+          >
+            Sign In / Sign Up
+          </button>
+        )}
         </div>
-
-        <div className='w-44 h-24 flex flex-col justify-center items-center '><div className='font-semibold text-xl text-white'>Name</div><div  className='font-normal text-white'>Username</div></div>
+        <button  onClick={() => setShowMenu(false)} className='cursor-pointer'><img src={cross}/></button>
+      </div>
 
        <NavLink
           to="/"
@@ -108,6 +148,54 @@ function SideMenu({showMenu, setShowMenu}) {
                    </svg>
                    Settings
                  </NavLink>
+
+                 <NavLink
+        to="/contact"
+        className={({ isActive }) =>
+          `${baseClass} mb-0 ${isActive ? 'bg-white text-[#FF6767]' : 'text-white hover:bg-white hover:[color:#FF6767]'} text-auto w-[90%]`
+        }
+      >
+        <svg
+          width="44px"
+          height="44px"
+          viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          className={`${iconBaseClass} stroke-current`}
+        >
+          <path d="M18,16 C20.20915,16 22,14.20915 22,12 C22,9.79085 20.20915,8 18,8" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+          <path d="M6,8 C3.79086,8 2,9.79085 2,12 C2,14.20915 3.79086,16 6,16" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+          <path d="M6,16 L6,15.75 L6,14.5 L6,12 L6,8 C6,4.68629 8.6863,2 12,2 C15.3137,2 18,4.68629 18,8 L18,16 C18,19.3137 15.3137,22 12,22" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+        Contact
+      </NavLink>
+
+
+
+
+      <button
+        onClick={handleLogout}
+        className='text-white hover:bg-white hover:[color:#FF6767] w-[90%] rounded-2xl text-2xl px-4 py-2 mt-auto flex justify-start items-center gap-5 cursor-pointer'
+      >
+        <div>
+        <svg
+        width="44px"
+        height="44px"
+        viewBox="0 0 24 24"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        className={`${iconBaseClass} stroke-current`}
+      >
+        <path
+          d="M14 20H6C4.89543 20 4 19.1046 4 18L4 6C4 4.89543 4.89543 4 6 4H14M10 12H21M21 12L18 15M21 12L18 9"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
+      </div>
+        Logout
+      </button>
 
               
 

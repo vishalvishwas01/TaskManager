@@ -116,13 +116,6 @@ function Login() {
                 Forgot Password?
               </span>
             </button>
-
-            <div className="flex justify-center items-center gap-2">
-              Or, Login with <button>facebook</button>
-              <button>google</button>
-              <button>github</button>
-              <button>twitter</button>
-            </div>
           </div>
         </div>
 

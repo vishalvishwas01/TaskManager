@@ -17,6 +17,7 @@ const port = 3000;
 
 app.use(cors());
 app.use(bodyparser.json());
+const axios = require('axios');
 
 // admin
 app.get('/get', async(req, res)=>{
@@ -369,7 +370,7 @@ app.post('/contact', async (req, res) => {
   });
 
   const mailOptions = {
-    from: email,   // user's email
+    from: email,   // user's emailaa
     to: 'vishalvishwas7082@gmail.com',  // your email
     subject: `New Contact Form Message from ${name}`,
     text: `Name: ${name}\nEmail: ${email}\nMessage: ${message}`
@@ -383,6 +384,7 @@ app.post('/contact', async (req, res) => {
     res.status(500).json({ success: false, message: 'Failed to send message' });
   }
 });
+
 
 
 

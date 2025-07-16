@@ -3,6 +3,9 @@ import { v4 as uuidv4 } from 'uuid';
 import { Navigate, NavLink , useNavigate} from 'react-router-dom';
 import background from '../../assets/background.png';
 import signbanner from '../../assets/signbanner.png';
+import { GoogleLogin } from '@react-oauth/google';
+import * as jwt_decode from 'jwt-decode';
+
 
 function Signup() {
   const [info, setInfo] = useState({ name: '', username: '', email: '', password: '', confirmPassword: '' });
@@ -12,6 +15,7 @@ function Signup() {
   const [usererr, setUserError] = useState(false);
   const [emailerr, setEmailError] = useState(false);
   const [nameerr, setNameError] = useState(false);
+
 
   const [passLengthErr, setPassLengthErr] = useState(false);
     const navigate = useNavigate();
@@ -186,12 +190,6 @@ const handleChange = (e) => {
               <button className='text-blue-400 hover:text-blue-600 cursor-pointer'>Sign In</button>
             </NavLink>
 
-            <div className='flex justify-center items-center gap-2'>Or, Login with 
-              <button>facebook</button>
-              <button>google</button>
-              <button>github</button>
-              <button>twitter</button>
-            </div>
 
           </div>
         </div>
