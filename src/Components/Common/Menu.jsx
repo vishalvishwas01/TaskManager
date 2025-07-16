@@ -5,6 +5,8 @@ function Menu() {
 
   const [user, setUser] = useState({ name: '', email: '' });
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+
   const [logshow, setLogShow]=useState(false)
 
   useEffect(() => {
@@ -16,17 +18,20 @@ function Menu() {
 }, [user]);
 
 
-  useEffect(() => {
-    const username = localStorage.getItem('username');
-    if (username) {
-      fetch(`http://localhost:3000/user/${username}`)
-        .then(res => res.json())
-        .then(data => {
-          setUser({ name: data.name, email: data.email });
-        })
-        .catch(err => console.error('Failed to fetch user details:', err));
-    }
-  }, []);
+ useEffect(() => {
+  const username = localStorage.getItem('username');
+  if (username) {
+    setLoading(true);
+    fetch(`https://taskmanager-cnw2.onrender.com/user/${username}`)
+      .then(res => res.json())
+      .then(data => {
+        setUser({ name: data.name, email: data.email });
+      })
+      .catch(err => console.error('Failed to fetch user details:', err))
+      .finally(() => setLoading(false));
+  }
+}, []);
+
 
   const handleLogout = () => {
     localStorage.clear();
@@ -46,7 +51,9 @@ function Menu() {
   return (
     <div className=' hidden 2xl:flex flex-col justify-start gap-5 items-center w-full max-w-[300px]  min-w-[180px] [height:calc(100vh-112px)] [background-color:#FF6767] rounded-tr-2xl py-8 transition-all'>
       <div className=' w-44 h-24 flex flex-col justify-center items-center '>
-       {user.name && user.email ? (
+       {loading ? (
+          <div className="text-white text-lg">Loading...</div>
+        ) : user.name && user.email ? (
           <>
             <div className='font-semibold text-xl text-white'>{user.name}</div>
             <div className='font-normal text-white'>{user.email}</div>
@@ -59,6 +66,7 @@ function Menu() {
             Sign In / Sign Up
           </button>
         )}
+
       </div>
 
 

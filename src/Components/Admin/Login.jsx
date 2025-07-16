@@ -15,7 +15,7 @@ function Login() {
   }, []);
 
   const getData = async () => {
-    const res = await fetch(`http://localhost:3000/get`);
+    const res = await fetch(`https://taskmanager-cnw2.onrender.com/get`);
     const data = await res.json();
     setSearchList(data);
   };

@@ -18,7 +18,7 @@ function Contact() {
    useEffect(() => {
   async function loadTasks() {
     const username = localStorage.getItem('username');
-    const res = await fetch(`http://localhost:3000/tasks?username=${username}`);
+    const res = await fetch(`https://taskmanager-cnw2.onrender.com/tasks?username=${username}`);
     const data = await res.json();
     setTasks(data.map(t => ({ ...t, id: t._id })));
   }

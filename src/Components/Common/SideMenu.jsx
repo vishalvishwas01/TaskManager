@@ -4,22 +4,37 @@ import cross from '../../assets/cross.svg'
 import { useState, useEffect } from 'react';
 
 function SideMenu({showMenu, setShowMenu}) {
+  const [user, setUser] = useState({ name: '', email: '' });
+  const [loading, setLoading] = useState(false);
+  const [logshow, setLogShow]=useState(false)
+
+ 
+
     const handleNavigate = () => setShowMenu(false);
 
-    const [user, setUser] = useState({ name: '', email: '' });
   const navigate = useNavigate();
 
   useEffect(() => {
-    const username = localStorage.getItem('username');
-    if (username) {
-      fetch(`http://localhost:3000/user/${username}`)
-        .then(res => res.json())
-        .then(data => {
-          setUser({ name: data.name, email: data.email });
-        })
-        .catch(err => console.error('Failed to fetch user details:', err));
-    }
-  }, []);
+  const username = localStorage.getItem('username');
+  if (username) {
+    setLoading(true);
+    fetch(`https://taskmanager-cnw2.onrender.com/user/${username}`)
+      .then(res => res.json())
+      .then(data => {
+        setUser({ name: data.name, email: data.email });
+      })
+      .catch(err => console.error('Failed to fetch user details:', err))
+      .finally(() => setLoading(false));
+  }
+}, []);
+
+ useEffect(() => {
+  if (user.name === '') {
+    setLogShow(false);
+  } else {
+    setLogShow(true);
+  }
+}, [user]);
 
   const handleLogout = () => {
     localStorage.clear();
@@ -45,10 +60,12 @@ function SideMenu({showMenu, setShowMenu}) {
        <div className={` absolute inset-0 bg-black transition-opacity duration-300 ease-in-out ${showMenu ? 'opacity-50 pointer-events-auto' : 'opacity-0 pointer-events-none'}`} onClick={() => setShowMenu(false)}/><div className={`flex flex-col justify-start items-center pt-8 gap-5 absolute top-0 left-0 w-[300px] h-screen bg-[#FF6767] z-60 transform transition-transform duration-300 ease-in-out ${showMenu ? 'translate-x-0' : '-translate-x-full'}`}>
         <div className=' w-64 h-24 flex justify-between items-center'>
           <div className='flex flex-col  w-50'>
-       {user.name && user.email ? (
+       {loading ? (
+          <div className="text-white text-lg">Loading...</div>
+        ) : user.name && user.email ? (
           <>
             <div className='font-semibold text-xl text-white'>{user.name}</div>
-            <div className='font-normal text-white  break-words'>{user.email}</div>
+            <div className='font-normal text-white'>{user.email}</div>
           </>
         ) : (
           <button

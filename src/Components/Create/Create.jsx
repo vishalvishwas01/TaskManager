@@ -4,6 +4,8 @@ import {v4 as uuidv4} from 'uuid'
 function Create({toggle, setToggle, addTask, AddEdit, editTask, setEditTask, updateTask, currentDates}) {
     const ExitPop = () => {setToggle('hidden');};
     const [titleError, setTitleError] = useState('');
+    const [loading, setLoading] = useState(false);
+
 
 
     const [form, setForm]=useState({title:'',date:'',desc:'', status:'Not Started'})
@@ -36,43 +38,57 @@ function Create({toggle, setToggle, addTask, AddEdit, editTask, setEditTask, upd
 
 
   const handleDone = async () => {
+  setLoading(true);
   const username = localStorage.getItem("username");
   if (!username) {
     alert("User not logged in");
+    setLoading(false);
     return;
   }
 
-  if (editTask) {
-    updateTask({ ...editTask, ...form });
-    setEditTask(null);
-    window.location.reload();
+  try {
+    if (editTask) {
+      updateTask({ ...editTask, ...form });
+      setEditTask(null);
 
-    await fetch(`http://localhost:3000/tasks/${editTask.id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ ...form, username })  // attach username
-    });
-  } else {
-    const newTask = {
-      ...form,
-      date: form.date || currentDates,
-      id: uuidv4(),
-      status: form.status || "Not Started",
-      username, // attach username
-    };
-    addTask(newTask);
-    window.location.reload();
+      await fetch(`https://taskmanager-cnw2.onrender.com/tasks/${editTask.id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...form, username })
+      });
+    } else {
+      const newTask = {
+        ...form,
+        date: form.date || currentDates,
+        id: uuidv4(),
+        status: form.status || "Not Started",
+        username,
+      };
 
-    await fetch("http://localhost:3000/tasks", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(newTask),
-    });
+      const res = await fetch("https://taskmanager-cnw2.onrender.com/tasks", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newTask),
+      });
+
+      if (res.ok) {
+        const savedTask = await res.json();
+        addTask({ ...savedTask, id: savedTask._id });
+      } else {
+        console.error("Failed to add task", res.statusText);
+      }
+    }
+    setForm({ title: "", date: "", desc: "" });
+    ExitPop();
+    window.location.reload();
+  } catch (err) {
+    console.error("Error saving task:", err);
+  } finally {
+    setLoading(false);
   }
-
-  setForm({ title: "", date: "", desc: "" });
-  ExitPop();
 };
+
+
 
 
       
@@ -95,7 +111,14 @@ function Create({toggle, setToggle, addTask, AddEdit, editTask, setEditTask, upd
             <textarea onChange={handleChange} value={form.desc} name='desc' id='desc' className='border-2 border-gray-400 rounded-md px-2 py-1 w-full md:w-[90%] text-2xl resize-none' placeholder='Write description here...'rows={4}></textarea>
         </div>
       </div>
-      <div className='w-[100%] h-10 flex justify-start items-center px-2'><button onClick={handleDone} disabled={!!titleError || form.title.trim() === ''} className='disabled:opacity-50 disabled:cursor-not-allowed w-20 h-10 rounded-xl border-none [background-color:#FF6767] text-white text-xl cursor-pointer hover:[background-color:#fd2121] transition-all'>Done</button></div>
+      <div className='w-[100%] h-10 flex justify-start items-center px-2 py-2'><button
+        onClick={handleDone}
+        disabled={!!titleError || form.title.trim() === '' || loading}
+        className='disabled:opacity-50 disabled:cursor-not-allowed w-20 h-10 rounded-xl border-none [background-color:#FF6767] text-white text-xl cursor-pointer hover:[background-color:#fd2121] transition-all'
+          >
+            {loading ? 'Adding...' : 'Done'}
+          </button>
+          </div>
     </div>
     </div>
   )

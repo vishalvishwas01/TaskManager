@@ -40,7 +40,7 @@ function ForgotPassword({ fogtoggle, emailunchange, setFogtoggle }) {
   const sendOtp = async () => {
     try {
       // Check if email exists
-      const checkRes = await fetch(`http://localhost:3000/checkUserExists?email=${email}`);
+      const checkRes = await fetch(`https://taskmanager-cnw2.onrender.com/checkUserExists?email=${email}`);
       const checkData = await checkRes.json();
 
       if (!checkData.exists) {
@@ -49,7 +49,7 @@ function ForgotPassword({ fogtoggle, emailunchange, setFogtoggle }) {
       }
 
       // Send OTP
-      const res = await fetch('http://localhost:3000/sendOtp', {
+      const res = await fetch('https://taskmanager-cnw2.onrender.com/sendOtp', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email })
@@ -71,7 +71,7 @@ function ForgotPassword({ fogtoggle, emailunchange, setFogtoggle }) {
 
   const verifyOtp = async () => {
     try {
-      const res = await fetch('http://localhost:3000/verifyOtp', {
+      const res = await fetch('https://taskmanager-cnw2.onrender.com/verifyOtp', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, otp })
@@ -98,7 +98,7 @@ function ForgotPassword({ fogtoggle, emailunchange, setFogtoggle }) {
     }
 
     try {
-      const res = await fetch('http://localhost:3000/resetPassword', {
+      const res = await fetch('https://taskmanager-cnw2.onrender.com/resetPassword', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, newPassword })

@@ -46,7 +46,7 @@ function Hero({ searchQuery, currentDate, tasks, setTasks }) {
    const handleStatusChange = async (taskId, newStatus) => {
   const username = localStorage.getItem("username");
   try {
-    const res = await fetch(`http://localhost:3000/tasks/${taskId}`, {
+    const res = await fetch(`https://taskmanager-cnw2.onrender.com/tasks/${taskId}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json"
@@ -99,7 +99,7 @@ function Hero({ searchQuery, currentDate, tasks, setTasks }) {
      const handleDelete = async(id)=>{
       const username = localStorage.getItem("username");
         setTasks(tasks.filter((task)=>task.id !==id))
-        await fetch(`http://localhost:3000/tasks/${id}?username=${username}`, { method: "DELETE" });
+        await fetch(`https://taskmanager-cnw2.onrender.com/tasks/${id}?username=${username}`, { method: "DELETE" });
 setTasks(tasks.filter(t => t.id !== id));
 
     }
@@ -118,7 +118,7 @@ setTasks(tasks.filter(t => t.id !== id));
       const clearHistory = async () => {
         const username = localStorage.getItem("username");
         try {
-          const res = await fetch(`http://localhost:3000/tasks/before/${currentDate}?username=${username}`, {
+          const res = await fetch(`https://taskmanager-cnw2.onrender.com/tasks/before/${currentDate}?username=${username}`, {
             method: "DELETE"
           });
           const data = await res.json();

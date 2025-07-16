@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
-import { Navigate, NavLink , useNavigate} from 'react-router-dom';
+import {NavLink , useNavigate} from 'react-router-dom';
 import background from '../../assets/background.png';
 import signbanner from '../../assets/signbanner.png';
-import { GoogleLogin } from '@react-oauth/google';
-import * as jwt_decode from 'jwt-decode';
+
 
 
 function Signup() {
@@ -13,8 +12,12 @@ function Signup() {
   const [searchlist, setSearchList] = useState([]);
   const [passerr, setPassError] = useState(false);
   const [usererr, setUserError] = useState(false);
-  const [emailerr, setEmailError] = useState(false);
+  const [emailerr, setEmailError] = useState('');
   const [nameerr, setNameError] = useState(false);
+  
+
+  const [isRegistering, setIsRegistering] = useState(false);
+
 
 
   const [passLengthErr, setPassLengthErr] = useState(false);
@@ -44,14 +47,23 @@ const handleChange = (e) => {
   }
 
   if (name === 'email') {
-    const isEmailExist = searchlist.some(user => user.email === value);
-    setEmailError(isEmailExist);
+  const emailFormat = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const isEmailExist = searchlist.some(user => user.email === value);
+  
+  if (!emailFormat.test(value)) {
+    setEmailError('Invalid email format');
+  } else if (isEmailExist) {
+    setEmailError('Email already exists');
+  } else {
+    setEmailError('');
   }
+}
+
 };
 
 
   const getData = async () => {
-    const res = await fetch(`http://localhost:3000/get`);
+    const res = await fetch(`https://taskmanager-cnw2.onrender.com/get`);
     const data = await res.json();
     setSearchList(data);
   };
@@ -61,35 +73,36 @@ const handleChange = (e) => {
   }, []);
 
   const handleRegister = async () => {
-    if (info.name.trim() === '') {
-      setNameError(true);
-      return;
-    } else {
-      setNameError(false);
-    }
+  if (info.name.trim() === '') {
+    setNameError(true);
+    return;
+  } else {
+    setNameError(false);
+  }
 
-    const isUserExist = searchlist.some(user => user.username === info.username);
-    const isEmailExist = searchlist.some(user => user.email === info.email);
-    if (isUserExist) {
-      setUserError(true);
-      return;
-    }
+  const isUserExist = searchlist.some(user => user.username === info.username);
+  const isEmailExist = searchlist.some(user => user.email === info.email);
+  if (isUserExist) {
+    setUserError(true);
+    return;
+  }
 
-    if (isEmailExist) {
-      setEmailError(true);
-      return;
-    }
+  if (isEmailExist) {
+    setEmailError(true);
+    return;
+  }
 
-    if (info.password !== info.confirmPassword) {
-      setPassError(true);
-      return;
-    }
+  if (info.password !== info.confirmPassword) {
+    setPassError(true);
+    return;
+  }
 
+  try {
+    setIsRegistering(true);  // start loading
     const newUser = { ...info, id: uuidv4() };
     setList([...list, newUser]);
-    console.log(newUser);
 
-    await fetch('http://localhost:3000/Signup', {
+    await fetch('https://taskmanager-cnw2.onrender.com/Signup', {
       method: 'POST',
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(newUser)
@@ -98,7 +111,13 @@ const handleChange = (e) => {
     setInfo({ name: '', username: '', email: '', password: '', confirmPassword: '' });
     getData();
     navigate('/login');
-  };
+  } catch (error) {
+    console.error("Registration failed:", error);
+  } finally {
+    setIsRegistering(false);  // stop loading
+  }
+};
+
 
   const isRegisterDisabled = usererr || emailerr || passerr || nameerr || passLengthErr || Object.values(info).some(val => val.trim() === '');
 
@@ -148,7 +167,8 @@ const handleChange = (e) => {
                 className='border-2 border-gray-400 w-[100%] sm:w-[90%] py-2 rounded-xl px-2'
                 placeholder='Enter your email'
               />
-              {emailerr && <div className='text-red-500'>Email already exists</div>}
+              {emailerr && <div className='text-red-500'>{emailerr}</div>}
+
             </div>
 
             <div className='w-full'>
@@ -179,10 +199,10 @@ const handleChange = (e) => {
 
             <button
               onClick={handleRegister}
-              disabled={isRegisterDisabled}
-              className={`bg-[#FF6767] hover:bg-red-600 text-white p-3 rounded-2xl ${isRegisterDisabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
+              disabled={isRegisterDisabled || isRegistering}
+              className={`bg-[#FF6767] hover:bg-red-600 text-white p-3 rounded-2xl ${isRegisterDisabled || isRegistering ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
             >
-              Register
+               {isRegistering ? 'Registering...' : 'Register'}
             </button>
 
             <NavLink to="/login" className='flex justify-center items-center gap-2'>

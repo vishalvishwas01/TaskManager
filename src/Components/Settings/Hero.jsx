@@ -3,6 +3,8 @@ import ForgotPassword from '../Common/ForgotPassword';
 
 function Hero() {
 
+  const [loading, setLoading] = useState(true);
+
   const [userInfo, setUserInfo] = useState({
     name: '',
     username: '',
@@ -31,18 +33,21 @@ const currentUsername = localStorage.getItem('username');
   }, []);
 
   const fetchUserData = async (username) => {
-    try {
-      const res = await fetch(`http://localhost:3000/getUser?username=${username}`);
-      const data = await res.json();
-      setUserInfo({
-        name: data.name || '',
-        username: data.username || '',
-        email: data.email || ''
-      });
-    } catch (error) {
-      console.error('Error fetching user info:', error);
-    }
-  };
+  try {
+    setLoading(true);
+    const res = await fetch(`https://taskmanager-cnw2.onrender.com/getUser?username=${username}`);
+    const data = await res.json();
+    setUserInfo({
+      name: data.name || '',
+      username: data.username || '',
+      email: data.email || ''
+    });
+  } catch (error) {
+    console.error('Error fetching user info:', error);
+  } finally {
+    setLoading(false);
+  }
+};
 
 
   const handleChange = (e) => {
@@ -55,12 +60,12 @@ const currentUsername = localStorage.getItem('username');
   const handleSaveChanges = async () => {
   try {
     // Check username existence
-    const usernameCheck = await fetch(`http://localhost:3000/checkUserExists?username=${userInfo.username}&currentUsername=${currentUsername}`);
+    const usernameCheck = await fetch(`https://taskmanager-cnw2.onrender.com/checkUserExists?username=${userInfo.username}&currentUsername=${currentUsername}`);
 
     const usernameData = await usernameCheck.json();
 
     // Check email existence
-    const emailCheck = await fetch(`http://localhost:3000/checkUserExists?email=${userInfo.email}&currentUsername=${currentUsername}`);
+    const emailCheck = await fetch(`https://taskmanager-cnw2.onrender.com/checkUserExists?email=${userInfo.email}&currentUsername=${currentUsername}`);
     const emailData = await emailCheck.json();
 
     // Prepare error state
@@ -80,7 +85,7 @@ const currentUsername = localStorage.getItem('username');
     }
 
     // Proceed to update
-    const res = await fetch(`http://localhost:3000/updateUser`, {
+    const res = await fetch(`https://taskmanager-cnw2.onrender.com/updateUser`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -129,7 +134,7 @@ useEffect(() => {
 const handlePasswordChange = async () => {
   try {
     // Verify old password
-    const res = await fetch('http://localhost:3000/verifyPassword', {
+    const res = await fetch('https://taskmanager-cnw2.onrender.com/verifyPassword', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -158,7 +163,7 @@ const handlePasswordChange = async () => {
     }
 
     // Proceed to update password
-    const updateRes = await fetch('http://localhost:3000/updatePassword', {
+    const updateRes = await fetch('https://taskmanager-cnw2.onrender.com/updatePassword', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -201,14 +206,14 @@ const handlefogtoggle = ()=>{
 
         <div className='border-2 border-gray-500 rounded-2xl w-full flex flex-col justify-start items-center gap-2 py-4 px-4'>
           <label className='w-full justify-start items-center px-2'>Name</label>
-          <input name="name" onChange={handleChange}  value={userInfo.name} className='border-1 border-gray-500 w-full justify-start items-center rounded-xl px-2 py-2 text-xl text-gray-500 hover:text-black'/>
+          <input name="name" onChange={handleChange} disabled={loading} value={loading ? 'Fetching...' : userInfo.name} className='border-1 border-gray-500 w-full justify-start items-center rounded-xl px-2 py-2 text-xl text-gray-500 hover:text-black'/>
 
            <div className='w-full justify-start items-center px-2'>Username</div>
-          <input name="username" value={userInfo.username} onChange={handleChange} className='border-1 border-gray-500 w-full justify-start items-center rounded-xl px-2 py-2 text-xl text-gray-500 hover:text-black' />
+          <input name="username" disabled={loading} value={loading ? 'Fetching...' : userInfo.username} onChange={handleChange} className='border-1 border-gray-500 w-full justify-start items-center rounded-xl px-2 py-2 text-xl text-gray-500 hover:text-black' />
           {errors.username && <span className="text-red-500">{errors.username}</span>}
 
            <div  className='w-full justify-start items-center px-2'>Email</div>
-          <input name="email" onChange={handleChange} value={userInfo.email} className='border-1 border-gray-500 w-full justify-start items-center rounded-xl px-2 py-2 text-xl text-gray-500 hover:text-black' />
+          <input name="email" onChange={handleChange} value={loading ? 'Fetching...' : userInfo.email} className='border-1 border-gray-500 w-full justify-start items-center rounded-xl px-2 py-2 text-xl text-gray-500 hover:text-black' />
           {errors.email && <span className="text-red-500">{errors.email}</span>}
         </div>
 
