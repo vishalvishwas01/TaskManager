@@ -51,11 +51,8 @@ function Hero({ searchQuery, currentDate, tasks, setTasks }) {
   try {
     const res = await fetch(`https://taskmanager-cnw2.onrender.com/tasks/${taskId}`, {
       method: "PUT",
-      headers: {
-        "Content-Type": "application/json"
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username, status: newStatus })
-      
     });
 
     if (res.ok) {
@@ -64,14 +61,18 @@ function Hero({ searchQuery, currentDate, tasks, setTasks }) {
           task._id === taskId ? { ...task, status: newStatus } : task
         )
       );
+
+      if (selectedTask && selectedTask._id === taskId) {
+        setSelectedTask(prev => ({ ...prev, status: newStatus }));
+      }
     } else {
       console.error("Failed to update status");
     }
   } catch (error) {
     console.error("Error:", error);
   }
-  window.location.reload();
 };
+
 
 
     const [CreateOpen, setCreateOpen]= useState('hidden')
@@ -110,14 +111,18 @@ setTasks(tasks.filter(t => t.id !== id));
     }
 
     const [editTask, setEditTask] = useState(null);
+    
     const updateTask = (updatedTask) => {
-  const updatedTasks = tasks.map(task => task.id === updatedTask.id ? updatedTask : task);
+  const updatedTasks = tasks.map(task =>
+    task.id === updatedTask.id ? updatedTask : task
+  );
   setTasks(updatedTasks);
 
   if (selectedTask?.id === updatedTask.id) {
     setSelectedTask(updatedTask);
   }
-        };
+};
+
 
       
       const totalTasks = tasks.length;
