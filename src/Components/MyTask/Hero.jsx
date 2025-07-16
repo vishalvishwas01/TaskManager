@@ -55,6 +55,7 @@ function Hero({ searchQuery, currentDate, tasks, setTasks }) {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({ username, status: newStatus })
+      
     });
 
     if (res.ok) {
@@ -69,6 +70,7 @@ function Hero({ searchQuery, currentDate, tasks, setTasks }) {
   } catch (error) {
     console.error("Error:", error);
   }
+  window.location.reload();
 };
 
 
