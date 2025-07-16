@@ -13,7 +13,7 @@ client.connect();
 
 const dbName = process.env.DB_NAME;
 const app = express();
-const port = 3000;
+const port = 3003;
 
 app.use(cors());
 app.use(bodyparser.json());
@@ -207,7 +207,6 @@ app.put("/tasks/:id", async (req, res) => {
 });
 
 
-// DELETE a task
 // DELETE a task
 app.delete("/tasks/:id", async (req, res) => {
   const { id } = req.params;

@@ -35,7 +35,7 @@ const currentUsername = localStorage.getItem('username');
   const fetchUserData = async (username) => {
   try {
     setLoading(true);
-    const res = await fetch(`https://taskmanager-cnw2.onrender.com/getUser?username=${username}`);
+    const res = await fetch(`http://localhost:3003/getUser?username=${username}`);
     const data = await res.json();
     setUserInfo({
       name: data.name || '',
@@ -60,12 +60,12 @@ const currentUsername = localStorage.getItem('username');
   const handleSaveChanges = async () => {
   try {
     // Check username existence
-    const usernameCheck = await fetch(`https://taskmanager-cnw2.onrender.com/checkUserExists?username=${userInfo.username}&currentUsername=${currentUsername}`);
+    const usernameCheck = await fetch(`http://localhost:3003/checkUserExists?username=${userInfo.username}&currentUsername=${currentUsername}`);
 
     const usernameData = await usernameCheck.json();
 
     // Check email existence
-    const emailCheck = await fetch(`https://taskmanager-cnw2.onrender.com/checkUserExists?email=${userInfo.email}&currentUsername=${currentUsername}`);
+    const emailCheck = await fetch(`http://localhost:3003/checkUserExists?email=${userInfo.email}&currentUsername=${currentUsername}`);
     const emailData = await emailCheck.json();
 
     // Prepare error state
@@ -85,7 +85,7 @@ const currentUsername = localStorage.getItem('username');
     }
 
     // Proceed to update
-    const res = await fetch(`https://taskmanager-cnw2.onrender.com/updateUser`, {
+    const res = await fetch(`http://localhost:3003/updateUser`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -134,7 +134,7 @@ useEffect(() => {
 const handlePasswordChange = async () => {
   try {
     // Verify old password
-    const res = await fetch('https://taskmanager-cnw2.onrender.com/verifyPassword', {
+    const res = await fetch('http://localhost:3003/verifyPassword', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -163,7 +163,7 @@ const handlePasswordChange = async () => {
     }
 
     // Proceed to update password
-    const updateRes = await fetch('https://taskmanager-cnw2.onrender.com/updatePassword', {
+    const updateRes = await fetch('http://localhost:3003/updatePassword', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({

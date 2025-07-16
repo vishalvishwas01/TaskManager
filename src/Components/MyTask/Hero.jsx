@@ -49,7 +49,7 @@ function Hero({ searchQuery, currentDate, tasks, setTasks }) {
    const handleStatusChange = async (taskId, newStatus) => {
   const username = localStorage.getItem("username");
   try {
-    const res = await fetch(`https://taskmanager-cnw2.onrender.com/tasks/${taskId}`, {
+    const res = await fetch(`http://localhost:3003/tasks/${taskId}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username, status: newStatus })
@@ -105,7 +105,7 @@ function Hero({ searchQuery, currentDate, tasks, setTasks }) {
      const handleDelete = async(id)=>{
       const username = localStorage.getItem("username");
         setTasks(tasks.filter((task)=>task.id !==id))
-        await fetch(`https://taskmanager-cnw2.onrender.com/tasks/${id}?username=${username}`, { method: "DELETE" });
+        await fetch(`http://localhost:3003/tasks/${id}?username=${username}`, { method: "DELETE" });
 setTasks(tasks.filter(t => t.id !== id));
 
     }
@@ -149,7 +149,7 @@ setTasks(tasks.filter(t => t.id !== id));
 
                 try {
                   // Call the backend to delete tasks
-                  await fetch(`https://taskmanager-cnw2.onrender.com/tasks/date/${currentDate}?username=${username}`, {
+                  await fetch(`http://localhost:3003/tasks/date/${currentDate}?username=${username}`, {
                     method: 'DELETE'
                   });
 

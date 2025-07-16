@@ -63,7 +63,7 @@ const handleChange = (e) => {
 
 
   const getData = async () => {
-    const res = await fetch(`https://taskmanager-cnw2.onrender.com/get`);
+    const res = await fetch(`http://localhost:3003/get`);
     const data = await res.json();
     setSearchList(data);
   };
@@ -102,7 +102,7 @@ const handleChange = (e) => {
     const newUser = { ...info, id: uuidv4() };
     setList([...list, newUser]);
 
-    await fetch('https://taskmanager-cnw2.onrender.com/Signup', {
+    await fetch('http://localhost:3003/Signup', {
       method: 'POST',
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(newUser)

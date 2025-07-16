@@ -1,0 +1,47 @@
+┣ 📂assets
+┃ ┣ 📜Back.svg
+┃ ┣ 📜background.png
+┃ ┣ 📜blue.svg
+┃ ┣ 📜blueDot.svg
+┃ ┣ 📜cross.svg
+┃ ┣ 📜edit.svg
+┃ ┣ 📜green.svg
+┃ ┣ 📜greenDot.svg
+┃ ┣ 📜logo.svg
+┃ ┣ 📜Mydelete.svg
+┃ ┣ 📜Myedit.svg
+┃ ┣ 📜react.svg
+┃ ┣ 📜Red.svg
+┃ ┣ 📜redDot.svg
+┃ ┣ 📜signbanner.png
+┃ ┣ 📜Statusimg.svg
+┃ ┗ 📜svgviewer-output.svg
+┣ 📂Components
+┃ ┣ 📂Admin
+┃ ┃ ┣ 📜Login.jsx
+┃ ┃ ┗ 📜Signup.jsx
+┃ ┣ 📂Common
+┃ ┃ ┣ 📜ForgotPassword.jsx
+┃ ┃ ┣ 📜Menu.jsx
+┃ ┃ ┣ 📜Navbar.jsx
+┃ ┃ ┗ 📜SideMenu.jsx
+┃ ┣ 📂Contact
+┃ ┃ ┣ 📜Contact.jsx
+┃ ┃ ┗ 📜Hero.jsx
+┃ ┣ 📂Create
+┃ ┃ ┗ 📜Create.jsx
+┃ ┣ 📂Dashboard
+┃ ┃ ┣ 📜Dashboard.jsx
+┃ ┃ ┗ 📜Hero.jsx
+┃ ┣ 📂History
+┃ ┃ ┣ 📜Hero.jsx
+┃ ┃ ┗ 📜History.jsx
+┃ ┣ 📂MyTask
+┃ ┃ ┣ 📜Hero.jsx
+┃ ┃ ┗ 📜MyTask.jsx
+┃ ┗ 📂Settings
+┃   ┣ 📜Hero.jsx
+┃   ┗ 📜Settings.jsx
+┣ 📜App.jsx
+┣ 📜index.css
+┗ 📜main.jsx
