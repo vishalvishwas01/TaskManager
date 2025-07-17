@@ -22,7 +22,7 @@ function Menu() {
   const username = localStorage.getItem('username');
   if (username) {
     setLoading(true);
-    fetch(`https://taskmanager-cnw2.onrender.com/user/${username}`)
+    fetch(`http://localhost:3003/user/${username}`)
       .then(res => res.json())
       .then(data => {
         setUser({ name: data.name, email: data.email });

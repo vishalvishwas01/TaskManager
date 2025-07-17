@@ -55,7 +55,7 @@ function Hero({ searchQuery, currentDate, tasks, setTasks }) {
    const handleStatusChange = async (taskId, newStatus) => {
   const username = localStorage.getItem("username");
   try {
-    const res = await fetch(`https://taskmanager-cnw2.onrender.com/tasks/${taskId}`, {
+    const res = await fetch(`http://localhost:3003/tasks/${taskId}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json"
@@ -111,7 +111,7 @@ function Hero({ searchQuery, currentDate, tasks, setTasks }) {
    const handleDelete = async (id) => {
   const username = localStorage.getItem("username");
   try {
-    await fetch(`https://taskmanager-cnw2.onrender.com/tasks/${id}?username=${username}`, {
+    await fetch(`http://localhost:3003/tasks/${id}?username=${username}`, {
       method: "DELETE",
     });
     setTasks(tasks.filter(task => task._id !== id));
@@ -158,7 +158,7 @@ function Hero({ searchQuery, currentDate, tasks, setTasks }) {
         const handleClearCompleted = async () => {
   const username = localStorage.getItem("username");
   try {
-    const res = await fetch(`https://taskmanager-cnw2.onrender.com/tasks/clear/completed/${currentDate}?username=${username}`, {
+    const res = await fetch(`http://localhost:3003/tasks/clear/completed/${currentDate}?username=${username}`, {
       method: "DELETE",
     });
 

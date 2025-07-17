@@ -51,7 +51,7 @@ function Create({toggle, setToggle, addTask, AddEdit, editTask, setEditTask, upd
       updateTask({ ...editTask, ...form });
       setEditTask(null);
 
-      await fetch(`https://taskmanager-cnw2.onrender.com/tasks/${editTask.id}`, {
+      await fetch(`http://localhost:3003/tasks/${editTask.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ...form, username })
@@ -65,7 +65,7 @@ function Create({toggle, setToggle, addTask, AddEdit, editTask, setEditTask, upd
         username,
       };
 
-      const res = await fetch("https://taskmanager-cnw2.onrender.com/tasks", {
+      const res = await fetch("http://localhost:3003/tasks", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(newTask),

@@ -13,7 +13,7 @@ function Hero() {
     setStatus('');
 
     try {
-      const res = await fetch('https://taskmanager-cnw2.onrender.com/contact', {
+      const res = await fetch('http://localhost:3003/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, email, message })
