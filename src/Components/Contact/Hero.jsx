@@ -58,7 +58,7 @@ const [copied, setCopied] = useState(false);
 
 
   return (
-    <div className='w-full md:w-[80%] h-auto sm:h-130 rounded-2xl shadow-2xl flex flex-col justify-start items-center gap-5 p-4'>
+    <div className='mt-40 sm:mt-25  w-full md:w-[80%] h-auto sm:h-130 rounded-2xl shadow-2xl flex flex-col justify-start items-center gap-5 p-4'>
       <div className='w-full  flex flex-col justify-start items-center gap-4'>
         <div className='text-2xl font-semibold w-full'>Contact Me</div>
         <div className='w-full flex flex-wrap justify-start items-center gap-5'>

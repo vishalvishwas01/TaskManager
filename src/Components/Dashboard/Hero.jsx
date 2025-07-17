@@ -10,6 +10,7 @@ import redDot from '../../assets/redDot.svg'
 import Create from '../Create/Create'
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
+import AnimatedContent from '../Animation/AnimatedContent';
 
 function Hero({ searchQuery, currentDate, tasks, setTasks }) {
 
@@ -182,7 +183,8 @@ function Hero({ searchQuery, currentDate, tasks, setTasks }) {
 
       
   return (
-    <div className=' flex flex-wrap 2xl:flex-nowrap gap-10 justify-center items-center w-8xl h-auto  rounded-2xl  px-1 py-4 2xl:mr-4 my-0'>
+    <div className='mt-40 sm:mt-30   flex flex-wrap 2xl:flex-nowrap gap-10 justify-center items-start w-8xl h-auto  rounded-2xl  px-1 py-4 2xl:mr-4 my-0'>
+      <AnimatedContent direction='horizontal' reverse={true}>
         <div className='flex flex-col gap-2 justify-start items-center w-[100%] lg:w-115 2xl:w-[25dvw] h-190 rounded-2xl py-2 shadow-2xl '>
             {/* top header of left section start */}
             <div className='flex flex-col gap-2 w-[95%] h-20 '>
@@ -227,12 +229,14 @@ function Hero({ searchQuery, currentDate, tasks, setTasks }) {
 
             {/* main content of left section end */}
         </div>
+        </AnimatedContent>
 
 
 
     {/* main content of right section start */}
         <div className='flex flex-col justify-start items-center gap-4  w-[100%] lg:w-115 h-190 rounded-2xl'>
     {/* main content top section section start */}
+    <AnimatedContent direction='vertical' reverse={true}>
             <div className='flex flex-col justify-start items-center gap-5 shadow-2xl w-[100%] h-auto rounded-2xl py-2 pb-4 px-4'>
                 <div className='flex justify-start items-center gap-2 w-[98%] h-10 [color:#FF6767] text-xl font-semibold'><img src={Statusimg}/>Task Status</div>
                 <div className='flex justify-center items-center gap-3 w-[98%] h-35 '>
@@ -250,10 +254,12 @@ function Hero({ searchQuery, currentDate, tasks, setTasks }) {
                     </div>
                 </div>
             </div>
+            </AnimatedContent>
             {/* main content top section section end */}
             
             {/* main content bottom section end */}
             <div className='w-[100%] h-full rounded-2xl shadow-2xl py-2 pb-2 px-2'>
+              <AnimatedContent direction='vertical' reverse={false}>
             <div className='relative flex justify-between items-center gap-2 w-[98%] h-10 [color:#FF6767] text-xl font-semibold'><div className=' w-[200px] flex justify-center items-center gap-1'><img src={Statusimg}/>Completed Task</div> 
             <button onClick={()=>{setDel('flex')}} className='cursor-pointer flex justify-end mr-2 text-gray-400 w-[55%]'>Clear All</button>
             <div ref={popupRef} className={`${del} border-2 absolute w-50 top-8 right-10 flex-col justify-center items-center gap-4 px-4 py-2 rounded-xl bg-amber-100 z-10 opacity-100`}>
@@ -293,11 +299,13 @@ function Hero({ searchQuery, currentDate, tasks, setTasks }) {
                 ))
             )}
             </div>
+        </AnimatedContent>
         </div>
     {/* main content bottom section end */}
         </div>
 
     {/* main content of right section end */}
+    <AnimatedContent direction='horizontal' reverse={false}>
     <div  className='flex flex-col gap-2 justify-start items-center w-[100%] lg:w-110 2xl:w-[22dvw]  h-190 rounded-2xl py-2'>
          <div className='w-[100%] h-full shadow-2xl py-2 pb-2 px-2 rounded-2xl bord'>
             <div className=' flex justify-start items-center gap-2 w-[98%] h-10 [color:#FF6767] text-xl font-semibold mb-2'><img src={Statusimg}/>Task History</div>
@@ -336,6 +344,7 @@ function Hero({ searchQuery, currentDate, tasks, setTasks }) {
 
         </div>
     </div>
+        </AnimatedContent>
     <Create currentDates={currentDate} toggle={CreateOpen} setToggle={setCreateOpen} addTask={addTask} AddEdit={addedittoggle}  editTask={editTask} setEditTask={setEditTask}  updateTask={updateTask} />
     </div>
   )

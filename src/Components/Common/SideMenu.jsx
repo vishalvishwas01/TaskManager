@@ -192,7 +192,7 @@ function SideMenu({showMenu, setShowMenu}) {
 
       <button
         onClick={handleLogout}
-        className='text-white hover:bg-white hover:[color:#FF6767] w-[90%] rounded-2xl text-2xl px-4 py-2 mt-auto flex justify-start items-center gap-5 cursor-pointer'
+        className='text-white hover:bg-white hover:[color:#FF6767] w-[90%] rounded-2xl text-2xl px-4 py-2 flex justify-start items-center gap-5 cursor-pointer'
       >
         <div>
         <svg

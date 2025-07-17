@@ -182,7 +182,7 @@ setTasks(tasks.filter(t => t.id !== id));
 
       
   return (
-    <div className=' flex flex-wrap 2xl:flex-nowrap gap-10 justify-center items-center w-8xl h-auto  rounded-2xl  px-1 py-4 2xl:mr-4 my-0 mb-4 '>
+    <div className='mt-40 sm:mt-30 flex flex-wrap 2xl:flex-nowrap gap-10 justify-center items-start w-8xl h-auto  rounded-2xl  px-1 py-4 2xl:mr-4 my-0 mb-4 '>
         <div className='flex flex-col gap-2 justify-start items-center w-[100%] lg:w-115 2xl:w-[25dvw] h-190 rounded-2xl py-2 shadow-2xl '>
             {/* top header of left section start */}
             <div className='flex flex-col gap-2 w-[95%] h-20 '>
@@ -264,7 +264,7 @@ setTasks(tasks.filter(t => t.id !== id));
                                 <button onClick={()=>{handleStatusChange(selectedTask.id, 'Started'),setActiveMenuId(null);}} className='flex justify-start items-center w-full h-6 pl-4 hover:bg-[#FF6767] transition-all rounded-t-xl cursor-pointer'>Started</button>
                                 <button onClick={()=>{handleStatusChange(selectedTask.id, 'Completed'),setActiveMenuId(null);}} className='flex justify-start items-center w-full h-6 pl-4 hover:bg-[#FF6767] transition-all cursor-pointer text'>Completed</button>
                                 <button onClick={()=>{handleStatusChange(selectedTask.id, 'Not Started'),setActiveMenuId(null);}} className='flex justify-start items-center w-full h-6 pl-4 hover:bg-[#FF6767] transition-all cursor-pointer text'>Not Started</button>
-                                <button onClick={()=>{setEditTask(selectedTask), AddPop(), handleAddEdit('Edit').setActiveMenuId(null);}} className='flex justify-start items-center w-full h-6 pl-4 hover:bg-[#FF6767] transition-all cursor-pointer'>Edit</button>
+                                <button onClick={()=>{setEditTask(selectedTask), AddPop(), handleAddEdit('Edit'),setActiveMenuId(null);}} className='flex justify-start items-center w-full h-6 pl-4 hover:bg-[#FF6767] transition-all cursor-pointer'>Edit</button>
                             </div>
                             )}
                             </div>
