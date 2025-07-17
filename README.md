@@ -37,7 +37,7 @@ This full-featured app includes everything from user authentication to real-time
 
 <!-- GETTING STARTED -->
 ## Live Link
-https://task-manager-sable-ten.vercel.app/
+https://task-manager-privated.vercel.app/signup
 
 
 <!-- CONTACT -->
