@@ -94,7 +94,7 @@ function Create({toggle, setToggle, addTask, AddEdit, editTask, setEditTask, upd
       
   return (
     <div className={`inset-0 ${toggle} justify-center items-center w-screen h-full fixed [background-color:rgba(0,0,0,0.7)] z-40`}>
-    <div className="px-4 md:px-4 flex flex-col justify-center items-center gap-6 fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[95%] md:w-3xl h-140 border-1 rounded-2xl bg-white opacity-100 z-50 shadow-lg">
+    <div className="px-4 md:px-4 flex flex-col justify-center items-center gap-6 fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/3 w-[95%] md:w-3xl h-140 border-1 rounded-2xl bg-white opacity-100 z-50 shadow-lg">
       <div className='w-[100%] h-10 flex justify-between items-center px-2 text-xl font-semibold underline underline-offset-6 decoration-red-400 decoration-3'>{AddEdit}<button onClick={ExitPop} className='cursor-pointer underline underline-offset-6 decoration-black decoration-3'>Go Back</button></div>
       <div className='px-2 py-2 flex flex-col justify-start items-start gap-5 border-gray-400 w-[100%] h-auto'>
         <div className='w-[100%] h-auto flex flex-col justify-center items-start gap-2'>
