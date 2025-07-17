@@ -264,7 +264,7 @@ setTasks(tasks.filter(t => t.id !== id));
                                 <button onClick={()=>{handleStatusChange(selectedTask.id, 'Started'),setActiveMenuId(null);}} className='flex justify-start items-center w-full h-6 pl-4 hover:bg-[#FF6767] transition-all rounded-t-xl cursor-pointer'>Started</button>
                                 <button onClick={()=>{handleStatusChange(selectedTask.id, 'Completed'),setActiveMenuId(null);}} className='flex justify-start items-center w-full h-6 pl-4 hover:bg-[#FF6767] transition-all cursor-pointer text'>Completed</button>
                                 <button onClick={()=>{handleStatusChange(selectedTask.id, 'Not Started'),setActiveMenuId(null);}} className='flex justify-start items-center w-full h-6 pl-4 hover:bg-[#FF6767] transition-all cursor-pointer text'>Not Started</button>
-                                <button onClick={()=>{setEditTask(selectedTask), AddPop(), handleAddEdit('Edit').setActiveMenuId(null);}} className='flex justify-start items-center w-full h-6 pl-4 hover:bg-[#FF6767] transition-all cursor-pointer'>Edit</button>
+                                <button onClick={()=>{setEditTask(selectedTask), AddPop(), handleAddEdit('Edit'),setActiveMenuId(null);}} className='flex justify-start items-center w-full h-6 pl-4 hover:bg-[#FF6767] transition-all cursor-pointer'>Edit</button>
                             </div>
                             )}
                             </div>
