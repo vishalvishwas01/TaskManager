@@ -197,7 +197,7 @@ const handlefogtoggle = ()=>{
 
 
   return (
-    <div className='relative rounded-2xl shadow-2xl w-6xl h-[750px] flex flex-col justify-start items-center gap-5 p-4 overflow-x-hidden'>
+    <div className='mt-40 sm:mt-25 mb-4 relative rounded-2xl shadow-2xl w-6xl h-auto flex flex-col justify-start items-center gap-5 p-4'>
       {/* Account information */}
       <div className='w-full h-auto flex flex-col justify-start items-center p-2 gap-5'>
         <div className=' w-full flex flex-col justify-start items-center gap-5 px-4'>

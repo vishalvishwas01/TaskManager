@@ -49,7 +49,7 @@ function Menu() {
     'group flex gap-3 justify-start items-center w-2xs h-14 rounded-2xl px-4 text-2xl cursor-pointer transition-all';
   const iconBaseClass = 'transition-colors duration-300';
   return (
-    <div className=' hidden 2xl:flex flex-col justify-start gap-5 items-center w-full max-w-[300px]  min-w-[180px] [height:calc(100vh-112px)] [background-color:#FF6767] rounded-tr-2xl py-8 transition-all'>
+    <div className='mt-25 hidden 2xl:flex flex-col justify-start gap-5 items-center w-full max-w-[300px]  min-w-[180px]  min-h-screen  [background-color:#FF6767] rounded-tr-2xl py-8 transition-all'>
       <div className=' w-44 h-24 flex flex-col justify-center items-center '>
        {loading ? (
           <div className="text-white text-lg">Loading...</div>
@@ -179,7 +179,7 @@ function Menu() {
       {user.name !== '' && 
       <button
         onClick={handleLogout}
-        className='text-white hover:bg-white hover:[color:#FF6767] w-[90%] rounded-2xl text-2xl px-4 py-2 mt-auto flex justify-start items-center gap-5 cursor-pointer'
+        className='text-white hover:bg-white hover:[color:#FF6767] w-[90%] rounded-2xl text-2xl px-4 py-2 flex justify-start items-center gap-5 cursor-pointer'
       >
         <div>
         <svg

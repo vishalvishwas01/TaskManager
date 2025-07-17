@@ -40,7 +40,7 @@ const [showMenu, setShowMenu] = useState(false);
 
 
   return (
-    <div className=' w-full bg-amber-50 px-6 md:px-20 py-4 flex flex-wrap gap-4 md:gap-10 items-center shadow-xl justify-start 2xl:justify-start sm:justify-center'>
+    <div className='fixed z-50 w-full bg-amber-50 px-6 md:px-20 py-4 flex flex-wrap gap-4 md:gap-10 items-center shadow-xl justify-start 2xl:justify-start sm:justify-center'>
       <div className='hidden 2xl:block [color:#FF6767] font-semibold text-2xl md:text-3xl'>Task<span className='text-black ml-2'>Manager</span></div>
       <button onClick={() => setShowMenu(prev => !prev)} className='block 2xl:hidden [color:#FF6767] font-semibold text-2xl md:text-3xl p-0 rounded-md bg-transparent hover:bg-[#FF6767] group transition-colors duration-300'>
             <svg

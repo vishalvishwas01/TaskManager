@@ -80,7 +80,7 @@ function Create({toggle, setToggle, addTask, AddEdit, editTask, setEditTask, upd
     }
     setForm({ title: "", date: "", desc: "" });
     ExitPop();
-    window.location.reload();
+    // window.location.reload();
   } catch (err) {
     console.error("Error saving task:", err);
   } finally {

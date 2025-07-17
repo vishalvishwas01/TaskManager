@@ -55,17 +55,17 @@ function SideMenu({showMenu, setShowMenu}) {
   const iconBaseClass = 'transition-colors duration-300';
   
   return (
-     <div className={`fixed inset-0 z-20 ${showMenu ? 'pointer-events-auto' : 'pointer-events-none'}`} >
+     <div className={`fixed inset-0  z-20 ${showMenu ? 'pointer-events-auto' : 'pointer-events-none'}`} >
       {/* Backdrop */}
-       <div className={` absolute inset-0 bg-black transition-opacity duration-300 ease-in-out ${showMenu ? 'opacity-50 pointer-events-auto' : 'opacity-0 pointer-events-none'}`} onClick={() => setShowMenu(false)}/><div className={`flex flex-col justify-start items-center pt-8 gap-5 absolute top-0 left-0 w-[300px] h-screen bg-[#FF6767] z-60 transform transition-transform duration-300 ease-in-out ${showMenu ? 'translate-x-0' : '-translate-x-full'}`}>
+       <div className={` absolute  inset-0 bg-black transition-opacity duration-300 ease-in-out ${showMenu ? 'opacity-50  pointer-events-auto' : 'opacity-0 pointer-events-none'}`} onClick={() => setShowMenu(false)}/><div className={`flex flex-col justify-start items-center pt-8 gap-5 absolute top-0 left-0 w-[300px] h-screen bg-[#FF6767]  z-60 transform transition-transform duration-300 ease-in-out ${showMenu ? 'translate-x-0' : '-translate-x-full'}`}>
         <div className=' w-64 h-24 flex justify-between items-center'>
-          <div className='flex flex-col  w-50'>
+          <div className='flex flex-col   w-50'>
        {loading ? (
           <div className="text-white text-lg">Loading...</div>
         ) : user.name && user.email ? (
           <>
             <div className='font-semibold text-xl text-white'>{user.name}</div>
-            <div className='font-normal text-white'>{user.email}</div>
+            <div className='font-normal text-white break-all '>{user.email}</div>
           </>
         ) : (
           <button
@@ -192,7 +192,7 @@ function SideMenu({showMenu, setShowMenu}) {
 
       <button
         onClick={handleLogout}
-        className='text-white hover:bg-white hover:[color:#FF6767] w-[90%] rounded-2xl text-2xl px-4 py-2 mt-auto flex justify-start items-center gap-5 cursor-pointer'
+        className='text-white hover:bg-white hover:[color:#FF6767] w-[90%] rounded-2xl text-2xl px-4 py-2 flex justify-start items-center gap-5 cursor-pointer'
       >
         <div>
         <svg
